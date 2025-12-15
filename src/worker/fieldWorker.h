@@ -11,6 +11,19 @@ namespace core {
 
     class FieldAoiSystem;
 
+    static const std::vector<std::string> kMonsterTemplates = {
+    "SingleTwoHandSwordTemplate",
+    "BowAndArrowTemplate_1",
+    "BowAndArrowTemplate_2",
+    "DoubleSwordsTemplate_1",
+    "DoubleSwordsTemplate_3",
+    "MagicWandTemplate_1",
+    "MagicWandTemplate_2",
+    "NoWeaponTemplate_1",
+    "NoWeaponTemplate_2"
+    };
+
+
     class FieldWorker : public Worker {
     public:
         using Ptr = std::shared_ptr<FieldWorker>;
@@ -19,7 +32,9 @@ namespace core {
         ~FieldWorker();
 
         void handle_message(const NetMessage& msg);
-
+        static inline float clampf(float v, float lo, float hi) {
+            return std::max(lo, std::min(v, hi));
+        }
         // 서버 틱에서 호출 (dt: 초 단위)
         void update_world(float dt);
         void tick_players(float step);
@@ -35,7 +50,7 @@ namespace core {
         void on_player_enter_field(Player::Ptr player);
     private:
         bool is_walkable(const Vec2& from, const Vec2& to) const;
-
+        void SpawnMonstersEvenGrid(int fieldId);
 
     private:
         int fieldId_{ 0 };    

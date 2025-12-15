@@ -13,6 +13,9 @@ namespace monster_ecs {
             auto& ai = ecs.aiComp.get(e);
             if (ai.state != CAI::State::Chase) continue;
 
+            std::cout << "[Move] monsters=" << ecs.monsters.size() << "\n";
+            
+            std::cout << "[Move] state=" << (int)ai.state << " target=" << ai.targetId << "\n";
             auto& tr = ecs.transform.get(e);
 
             float px, py;
@@ -28,6 +31,7 @@ namespace monster_ecs {
 
             if (env.moveInAoi)
                 env.moveInAoi(e, tr.x, tr.y);
+
         }
     }
 

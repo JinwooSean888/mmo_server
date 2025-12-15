@@ -30,7 +30,7 @@ namespace monster_ecs {
 
             if (!target) {
                 ai.state = CAI::State::Idle;
-                return;
+                continue;
             }
 
             float px, py;

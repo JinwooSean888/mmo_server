@@ -110,76 +110,77 @@ namespace core {
 
         // === 몬스터 초기 생성 ===
         if (fieldId == 1000) {
-            auto monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
-            
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_1");
+            SpawnMonstersEvenGrid(1000);
+            //auto monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
+            //
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_1");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_2");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_2");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_1");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_1");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_3");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_3");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_1");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_1");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_2");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_2");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_1");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_1");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_2");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_2");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
-            monsterId = MakeDatabaseID(1);
-            monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
+            //monsterId = MakeDatabaseID(1);
+            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
 
-            if (aoiSystem_) {
-                // 몬스터라서 isPlayer = false
-                aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            }
+            //if (aoiSystem_) {
+            //    // 몬스터라서 isPlayer = false
+            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
+            //}
         }
     }
 
@@ -293,7 +294,10 @@ namespace core {
         if (dt <= 0.0f) return;
 
         worldTime_ += dt;
-
+  /*      std::cout << "[FW] field=" << fieldId_
+            << " monsters=" << monsterWorld_.monsters.size()
+            << " world_ptr=" << (void*)&monsterWorld_
+            << "\n";*/
         // ----------------------------
         // 플레이어 고정 틱 (20Hz)
         // ----------------------------
@@ -603,6 +607,40 @@ namespace core {
     void FieldWorker::tick_monsters(float step)
     {
         monsterWorld_.update(step, env_);
+    }
+    void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
+    {
+           if (fieldId != 1000) return;
+
+    constexpr int   kSpawnCount = 100;
+    constexpr float kMinX = 0.f, kMaxX = 500.f;
+    constexpr float kMinY = 0.f, kMaxY = 500.f;
+
+    // 100 -> 10 x 10
+    constexpr int cols = 10;
+    constexpr int rows = 10;
+
+    const float cellW = (kMaxX - kMinX) / cols; // 50
+    const float cellH = (kMaxY - kMinY) / rows; // 50
+
+    // 셀 중앙에 놓으면 가장 보기 좋고 충돌/겹침도 방지됨
+    for (int i = 0; i < kSpawnCount; ++i)
+    {
+        const int r = i / cols;
+        const int c = i % cols;
+
+        float x = kMinX + (c + 0.5f) * cellW;
+        float y = kMinY + (r + 0.5f) * cellH;
+
+        x = clampf(x, kMinX, kMaxX);
+        y = clampf(y, kMinY, kMaxY);
+
+        const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
+        auto monsterId = MakeDatabaseID(1);
+
+        monsterWorld_.create_monster(monsterId, x, y, tpl);
+        if (aoiSystem_) aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, x, y);
+    }
     }
 
 

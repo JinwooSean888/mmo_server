@@ -43,6 +43,7 @@ namespace core {
     {
         AoiVec2 pos{ x, y };
         aoi_.add_entity(id, isPlayer, pos);
+
     }
 
     void FieldAoiSystem::move_entity(std::uint64_t id, float x, float y)
