@@ -1,0 +1,68 @@
+// FieldWorker.h
+#pragma once
+#include <unordered_map>
+#include "worker/worker.h"
+#include "game/player.h"
+#include "proto/generated/field_generated.h"
+#include "net/session.h"
+#include "monster/MonsterWorld.h"
+#include "field/monster/MonsterEnvironment.h"
+namespace core {
+
+    class FieldAoiSystem;
+
+    class FieldWorker : public Worker {
+    public:
+        using Ptr = std::shared_ptr<FieldWorker>;
+
+        explicit FieldWorker(int fieldId);
+        ~FieldWorker();
+
+        void handle_message(const NetMessage& msg);
+
+        // 서버 틱에서 호출 (dt: 초 단위)
+        void update_world(float dt);
+        void tick_players(float step);
+        void tick_monsters(float step);
+        // 플레이어 등록/제거 (필드 입장/퇴장 시 사용)
+        void add_player(Player::Ptr player);
+        void remove_player(std::uint64_t playerId);
+        void init_monster_env(); 
+        int field_id() const { return fieldId_; }
+        void on_client_move_input(const field::FieldCmd& cmd, net::Session::Ptr session);
+        std::string get_prefab_name(uint64_t entityId, bool isMonster);
+        void send_field_enter(std::uint64_t watcherId, std::uint64_t subjectId, bool isMonster, const Vec2& pos);
+        void on_player_enter_field(Player::Ptr player);
+    private:
+        bool is_walkable(const Vec2& from, const Vec2& to) const;
+
+
+    private:
+        int fieldId_{ 0 };    
+        float worldTime_ = 0.0f;  // 필드 기준 누적 시간(초)
+        monster_ecs::MonsterWorld monsterWorld_;
+        monster_ecs::MonsterEnvironmentApi env_;
+        std::shared_ptr<FieldAoiSystem> aoiSystem_;
+        // playerId -> Player
+        std::unordered_map<std::uint64_t, Player::Ptr> players_;
+        float playerAcc_ = 0.0f;
+        float monsterAcc_ = 0.0f;
+
+        static constexpr float PlayerStep = 0.05f;  // 50ms
+        static constexpr float MonsterStep = 0.10f;  // 100ms
+    private:        
+        void send_combat_event(field::EntityType attackerType,uint64_t  attackerId, field::EntityType targetType, uint64_t targetId,int damage,int remainHp);
+        
+        void monster_spawn_in_aoi(std::uint64_t monsterId, float x, float y);
+        void monster_remove_from_aoi(std::uint64_t monsterId);
+        void handle_skill(const NetMessage& msg);
+    };
+
+    // WorkerManager 관련 헬퍼    
+    std::shared_ptr<core::FieldWorker> GetFieldWorker(int fieldId);
+    bool SendToFieldWorker(int fieldId, NetMessage msg);
+
+    // (옵션) 클라 절대좌표 Move를 필드워커로 보내는 헬퍼
+    void send_move_to_fieldworker(std::uint64_t playerId, int fieldId, float x, float y);
+
+} // namespace core

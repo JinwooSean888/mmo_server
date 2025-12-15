@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\net\uv_utils.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\dispatcher.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\thread_pool.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\worker\codec.cpp">
+      <Filter>worker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\worker\worker.cpp">
+      <Filter>worker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\tcp_server.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\net\session.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\worker\workerManager.cpp">
+      <Filter>worker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\worker\fieldWorker.cpp">
+      <Filter>worker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\monitor\monitor.cpp">
+      <Filter>core\monitor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\AoiWorld.cpp">
+      <Filter>field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\FieldAoiSystem.cpp">
+      <Filter>field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\Player.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\PlayerManager.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\FieldManager.cpp">
+      <Filter>field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\handlers\game_system_logic.cpp">
+      <Filter>core\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\handlers\game_field_logic.cpp">
+      <Filter>core\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\handlers\game_auth_logic.cpp">
+      <Filter>core\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\handlers\game_handler_registry.cpp">
+      <Filter>core\handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\monster\Systems\CombatSystem.cpp">
+      <Filter>field\monster\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\monster\Systems\MovementSystem.cpp">
+      <Filter>field\monster\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\monster\Systems\SpawnSystem.cpp">
+      <Filter>field\monster\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\monster\Systems\AISystem.cpp">
+      <Filter>field\monster\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\field\monster\MonsterWorld.cpp">
+      <Filter>field\monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\ids.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="worker">
+      <UniqueIdentifier>{1d2b5cc7-667f-46b1-8fb3-b5a407239e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{f4d00ab9-5f1f-4202-9e37-3868100f3d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{33d233b6-7cad-4c5e-848c-291d67b0b000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\proto">
+      <UniqueIdentifier>{dad2b4d4-1739-43b5-87c3-103d567e3f26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\proto\generated">
+      <UniqueIdentifier>{b101d628-080c-4914-aa48-4778ff96394c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\handlers">
+      <UniqueIdentifier>{8886c8a3-8843-4583-b37b-cb56703a12ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\monitor">
+      <UniqueIdentifier>{f0afbc7e-3d81-476b-ac86-441e1243b7fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="field">
+      <UniqueIdentifier>{d0c614e7-fc63-46d8-a74f-d1bcf91d5a59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{2ead1a8e-e8c1-4d7a-965c-96595d4a3046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="field\monster">
+      <UniqueIdentifier>{bb3d1c28-741d-42d3-a930-429b882d9fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="field\monster\systems">
+      <UniqueIdentifier>{48d8dc35-2861-464b-82c7-07179e8fdd32}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\net\uv_utils.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\dispatcher.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\thread_pool.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\ids.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\worker\codec.h">
+      <Filter>worker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\worker\worker.h">
+      <Filter>worker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\proto\Generated\game_generated.h">
+      <Filter>core\proto\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\tcp_server.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\session.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\core_types.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\worker\workerManager.h">
+      <Filter>worker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\worker\fieldWorker.h">
+      <Filter>worker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\monitor\monitor.h">
+      <Filter>core\monitor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\AoiWorld.h">
+      <Filter>field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\FieldAoiSystem.h">
+      <Filter>field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\proto\Generated\field_generated.h">
+      <Filter>core\proto\generated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\net\sessionManager.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\Player.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\PlayerManager.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\FieldManager.h">
+      <Filter>field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\handlers\game_system_logic.h">
+      <Filter>core\handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\handlers\game_field_logic.h">
+      <Filter>core\handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\handlers\game_auth_logic.h">
+      <Filter>core\handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\handlers\game_handler_registry.h">
+      <Filter>core\handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\proto\protocol_verify.h">
+      <Filter>core\proto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\Components.h">
+      <Filter>field\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\ComponentStorage.h">
+      <Filter>field\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\EntityTypes.h">
+      <Filter>field\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\MonsterEnvironment.h">
+      <Filter>field\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\MonsterWorld.h">
+      <Filter>field\monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\Systems\AISystem.h">
+      <Filter>field\monster\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\Systems\CombatSystem.h">
+      <Filter>field\monster\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\Systems\MovementSystem.h">
+      <Filter>field\monster\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\Systems\SpawnSystem.h">
+      <Filter>field\monster\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\GameServer.h" />
+  </ItemGroup>
+</Project>
