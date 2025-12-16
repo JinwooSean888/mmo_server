@@ -11,8 +11,7 @@ namespace core {
 
     class FieldAoiSystem;
 
-    static const std::vector<std::string> kMonsterTemplates = {
-    "SingleTwoHandSwordTemplate",
+    static const std::vector<std::string> kMonsterTemplates = {    
     "BowAndArrowTemplate_1",
     "BowAndArrowTemplate_2",
     "DoubleSwordsTemplate_1",

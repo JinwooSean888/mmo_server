@@ -612,7 +612,7 @@ namespace core {
     {
            if (fieldId != 1000) return;
 
-    constexpr int   kSpawnCount = 100;
+    constexpr int   kSpawnCount = 300;
     constexpr float kMinX = 0.f, kMaxX = 500.f;
     constexpr float kMinY = 0.f, kMaxY = 500.f;
 
