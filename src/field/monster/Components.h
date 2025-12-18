@@ -34,7 +34,8 @@ namespace monster_ecs {
             Patrol = 1,
             Chase = 2,
             Attack = 3,
-			Dead = 4,
+            Return = 4,
+			Dead = 5,
         };
         State state = State::Idle;
         std::uint64_t targetId = 0;

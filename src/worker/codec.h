@@ -35,7 +35,7 @@ namespace proto {
 
     inline bool verify_field_cmd(const uint8_t* buf, uint32_t len) {
         flatbuffers::Verifier v(buf, len);
-        return field::VerifyFieldCmdBuffer(v);
+        return field::VerifyEnvelopeBuffer(v);
     }
 
 } // namespace proto

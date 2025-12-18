@@ -57,4 +57,13 @@ namespace core {
         aoi_.remove_entity(id);
     }
 
+    void FieldAoiSystem::for_each_watcher(uint64_t subjectId,
+        std::function<void(uint64_t watcherId)> fn)
+    {
+        auto it = watchers_.find(subjectId);
+        if (it == watchers_.end()) return;
+
+        for (uint64_t watcher : it->second)
+            fn(watcher);
+    }
 } // namespace core

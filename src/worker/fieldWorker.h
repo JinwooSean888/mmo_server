@@ -6,20 +6,24 @@
 #include "proto/generated/field_generated.h"
 #include "net/session.h"
 #include "monster/MonsterWorld.h"
+#include "monster/Components.h"
 #include "field/monster/MonsterEnvironment.h"
 namespace core {
 
     class FieldAoiSystem;
 
     static const std::vector<std::string> kMonsterTemplates = {    
-    "BowAndArrowTemplate_1",
-    "BowAndArrowTemplate_2",
-    "DoubleSwordsTemplate_1",
-    "DoubleSwordsTemplate_3",
-    "MagicWandTemplate_1",
-    "MagicWandTemplate_2",
-    "NoWeaponTemplate_1",
-    "NoWeaponTemplate_2"
+    "BowAndArrow1",            
+    //"BowAndArrow2",
+    //"BowAndArrow3",
+    //"DoubleSwords1",
+    //"DoubleSwords2",
+    //"DoubleSwords3",
+    //"MagicWand1",
+    //"MagicWand2",
+    //"MagicWand3",
+    
+    //"NoWeaponTemplate_2"
     };
 
 
@@ -50,7 +54,7 @@ namespace core {
     private:
         bool is_walkable(const Vec2& from, const Vec2& to) const;
         void SpawnMonstersEvenGrid(int fieldId);
-
+        void broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState);
     private:
         int fieldId_{ 0 };    
         float worldTime_ = 0.0f;  // 필드 기준 누적 시간(초)

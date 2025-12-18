@@ -37,8 +37,8 @@ namespace core {
         init_monster_env();
         aoiSystem_ = std::make_shared<FieldAoiSystem>(
             fieldId_,
-            10.0f,
-            1,
+            15.0f,
+            2,
             [this](std::uint64_t watcherId, const AoiEvent& ev)
             {
                 std::cout << "[AOI] watcher=" << watcherId
@@ -50,7 +50,6 @@ namespace core {
                 auto sess = SessionManager::instance().find_by_player_id(watcherId);
                 if (!sess)
                     return;
-
 
                 flatbuffers::FlatBufferBuilder fbb;
                 auto pos = field::CreateVec2(fbb, ev.position.x, ev.position.y);
@@ -70,36 +69,41 @@ namespace core {
                     break;
                 }
 
-                // 플레이어/몬스터 구분
                 bool isMonster = is_monster_id(ev.subjectId);
                 field::EntityType et = field::EntityType::EntityType_Player;
                 if (isMonster) {
                     et = field::EntityType::EntityType_Monster;
                 }
 
-                // 프리팹 이름 가져오기                
                 std::string prefabName = get_prefab_name(ev.subjectId, isMonster);
                 auto prefabStr = fbb.CreateString(prefabName);
 
-                // 새 FieldCmd 시그니처에 맞춰 호출
                 auto cmd = field::CreateFieldCmd(
                     fbb,
-                    cmdType,        // type
-                    et,             // entityType
-                    ev.subjectId,   // entityId
-                    pos,            // pos
-                    0,              // dir (서버->클라 방향에선 아직 안 씀)
-                    prefabStr       // ★ 새로 추가된 prefab 필드
+                    cmdType,                // type
+                    et,                     // entityType
+                    ev.subjectId,           // entityId
+                    pos,                    // pos
+                    0,                      // dir (안씀)
+                    prefabStr               // prefab
                 );
-                fbb.Finish(cmd);
 
-                sess->send_payload(fbb.GetBufferPointer(), fbb.GetSize());
+                // 여기부터 변경: Envelope로 감싸서 보냄
+                auto envOffset = field::CreateEnvelope(
+                    fbb,
+                    field::Packet::Packet_FieldCmd,
+                    cmd.Union()
+                );
 
+                fbb.Finish(envOffset);
+
+                sess->send_payload(
+                    fbb.GetBufferPointer(),
+                    static_cast<std::uint32_t>(fbb.GetSize())
+                );
             }
         );
 
-
-        // Worker::loop()에서 메시지를 꺼낼 때 호출되는 콜백
         set_on_message(
             [this](const NetMessage& msg)
             {
@@ -107,108 +111,46 @@ namespace core {
             }
         );
 
-
-        // === 몬스터 초기 생성 ===
         if (fieldId == 1000) {
             SpawnMonstersEvenGrid(1000);
-            //auto monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
-            //
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_1");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "BowAndArrowTemplate_2");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_1");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "DoubleSwordsTemplate_3");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_1");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "MagicWandTemplate_2");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_1");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "NoWeaponTemplate_2");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
-            //monsterId = MakeDatabaseID(1);
-            //monsterWorld_.create_monster(monsterId, 102.0f, 155.0f, "SingleTwoHandSwordTemplate");
-
-            //if (aoiSystem_) {
-            //    // 몬스터라서 isPlayer = false
-            //    aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, 102.0f, 155.0f);
-            //}
         }
     }
+
 
     FieldWorker::~FieldWorker() = default;
 
     void FieldWorker::handle_message(const NetMessage& msg)
     {
-        if (!aoiSystem_)
-            return;
+        if (!aoiSystem_) return;
 
         if (msg.type == MessageType::Custom)
         {
             const uint8_t* buf = msg.payload.data();
-            auto* cmd = field::GetFieldCmd(buf);
+
+            auto env = field::GetEnvelope(buf);
+            if (!env) return;
+
+            if (env->pkt_type() != field::Packet::Packet_FieldCmd)
+                return;
+
+            auto* cmd = env->pkt_as_FieldCmd();
             if (!cmd) return;
 
-            // 이제 Custom 은 "클라의 Move 입력"만 처리
             if (cmd->type() == field::FieldCmdType::FieldCmdType_Move)
             {
                 on_client_move_input(*cmd, msg.session);
             }
+            // Enter/Leave 를 여기서도 쓰면 추가 분기
+
             return;
         }
         else if (msg.type == MessageType::SkillCmd)
         {
             handle_skill(msg);
+            return;
         }
     }
+
 
 
     void FieldWorker::on_client_move_input(const field::FieldCmd& cmd, net::Session::Ptr session)
@@ -334,12 +276,15 @@ namespace core {
         return true;
     }
 
-    void FieldWorker::send_combat_event(
-        field::EntityType attackerType,uint64_t attackerId, field::EntityType targetType, uint64_t  targetId, int damage, int remainHp)
+    void FieldWorker::send_combat_event(field::EntityType attackerType,uint64_t attackerId,field::EntityType targetType,uint64_t targetId,
+        int damage,int remainHp)
     {
+        auto sess = net::SessionManager::instance().find_by_player_id(targetId);
+        if (!sess) return;
+
         flatbuffers::FlatBufferBuilder fbb;
 
-        auto ev = field::CreateCombatEvent(
+        auto evOffset = field::CreateCombatEvent(
             fbb,
             attackerType,
             attackerId,
@@ -348,15 +293,21 @@ namespace core {
             damage,
             remainHp
         );
-        fbb.Finish(ev);
 
-        // 일단: 피격당한 플레이어 본인에게만 전송 (주변에게도 뿌리고 싶으면 AOI 사용)
-        auto sess = net::SessionManager::instance().find_by_player_id(targetId);
-        if (!sess)
-            return;
+        auto envOffset = field::CreateEnvelope(
+            fbb,
+            field::Packet::Packet_CombatEvent,
+            evOffset.Union()
+        );
 
-        sess->send_payload(fbb.GetBufferPointer(), fbb.GetSize());
+        fbb.Finish(envOffset);
+
+        sess->send_payload(
+            fbb.GetBufferPointer(),
+            static_cast<std::uint32_t>(fbb.GetSize())
+        );
     }
+
 
     void FieldWorker::monster_spawn_in_aoi(std::uint64_t monsterId, float x, float y)
     {
@@ -443,23 +394,33 @@ namespace core {
             ? field::EntityType::EntityType_Monster
             : field::EntityType::EntityType_Player;
 
-        // 몬스터만 prefab 사용, 플레이어는 "" 로 보냄
         std::string prefabName = get_prefab_name(subjectId, isMonster);
         auto prefabStr = fbb.CreateString(prefabName);
 
         auto cmd = field::CreateFieldCmd(
             fbb,
-            field::FieldCmdType::FieldCmdType_Enter, // type
-            et,                                      // entityType
-            subjectId,                               // entityId
-            posOffset,                               // pos
-            0,                                       // dir
-            prefabStr                                // prefab
+            field::FieldCmdType::FieldCmdType_Enter,
+            et,
+            subjectId,
+            posOffset,
+            0,
+            prefabStr
         );
 
-        fbb.Finish(cmd);
-        sess->send_payload(fbb.GetBufferPointer(), fbb.GetSize());
+        auto envOffset = field::CreateEnvelope(
+            fbb,
+            field::Packet::Packet_FieldCmd,
+            cmd.Union()
+        );
+
+        fbb.Finish(envOffset);
+
+        sess->send_payload(
+            fbb.GetBufferPointer(),
+            static_cast<std::uint32_t>(fbb.GetSize())
+        );
     }
+
     // FieldWorker 멤버로 추가
     void FieldWorker::on_player_enter_field(Player::Ptr player)
     {
@@ -570,6 +531,10 @@ namespace core {
         env_.removeFromAoi = [this](uint64_t mid) {
             if (aoiSystem_) aoiSystem_->remove_entity(mid);
             };
+
+        env_.broadcastAiState = [this](uint64_t monsterId, monster_ecs::CAI::State newState) {
+            broadcast_monster_ai_state(monsterId, newState);
+            };
     }
     void FieldWorker::tick_players(float step)
     {
@@ -610,37 +575,80 @@ namespace core {
     }
     void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
     {
-           if (fieldId != 1000) return;
+         if (fieldId != 1000) return;
 
-    constexpr int   kSpawnCount = 300;
-    constexpr float kMinX = 0.f, kMaxX = 500.f;
-    constexpr float kMinY = 0.f, kMaxY = 500.f;
-
-    // 100 -> 10 x 10
-    constexpr int cols = 10;
-    constexpr int rows = 10;
-
-    const float cellW = (kMaxX - kMinX) / cols; // 50
-    const float cellH = (kMaxY - kMinY) / rows; // 50
-
-    // 셀 중앙에 놓으면 가장 보기 좋고 충돌/겹침도 방지됨
-    for (int i = 0; i < kSpawnCount; ++i)
-    {
-        const int r = i / cols;
-        const int c = i % cols;
-
-        float x = kMinX + (c + 0.5f) * cellW;
-        float y = kMinY + (r + 0.5f) * cellH;
-
-        x = clampf(x, kMinX, kMaxX);
-        y = clampf(y, kMinY, kMaxY);
-
-        const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
-        auto monsterId = MakeDatabaseID(1);
-
-        monsterWorld_.create_monster(monsterId, x, y, tpl);
-        if (aoiSystem_) aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, x, y);
+        constexpr int   kSpawnCount = 300;
+        constexpr float kMinX = 0.f, kMaxX = 500.f;
+        constexpr float kMinY = 0.f, kMaxY = 500.f;
+    
+        // 100 -> 10 x 10
+        constexpr int cols = 10;
+        constexpr int rows = 10;
+    
+        const float cellW = (kMaxX - kMinX) / cols; // 50
+        const float cellH = (kMaxY - kMinY) / rows; // 50
+    
+        // 셀 중앙에 놓으면 가장 보기 좋고 충돌/겹침도 방지됨
+        for (int i = 0; i < kSpawnCount; ++i)
+        {
+            const int r = i / cols;
+            const int c = i % cols;
+    
+            float x = kMinX + (c + 0.5f) * cellW;
+            float y = kMinY + (r + 0.5f) * cellH;
+    
+            x = clampf(x, kMinX, kMaxX);
+            y = clampf(y, kMinY, kMaxY);
+    
+            const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
+            auto monsterId = MakeDatabaseID(1);
+    
+            monsterWorld_.create_monster(monsterId, x, y, tpl);
+            if (aoiSystem_) aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, x, y);
+        }
     }
+    void FieldWorker::broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState)
+    {
+        // 이 몬스터를 보고 있는 플레이어들에게만 보내고 싶으면
+        // aoiSystem_->for_each_watcher(monsterId, [&](uint64_t watcherId) { ... });
+        // 이런 식으로 네가 만든 AOI 유틸에 맞춰서 돌리면 됨.
+
+        aoiSystem_->for_each_watcher(monsterId, [&](uint64_t watcherId) {
+            auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
+            if (!sess) return;
+
+            flatbuffers::FlatBufferBuilder fbb;
+
+            field::AiStateType fbState = field::AiStateType::AiStateType_Idle;
+            switch (newState) {
+            case monster_ecs::CAI::State::Idle:   fbState = field::AiStateType::AiStateType_Idle;   break;
+            case monster_ecs::CAI::State::Patrol: fbState = field::AiStateType::AiStateType_Patrol; break;
+            case monster_ecs::CAI::State::Chase:  fbState = field::AiStateType::AiStateType_Chase;  break;
+            case monster_ecs::CAI::State::Attack: fbState = field::AiStateType::AiStateType_Attack; break;
+            case monster_ecs::CAI::State::Return: fbState = field::AiStateType::AiStateType_Return; break;
+            case monster_ecs::CAI::State::Dead:   fbState = field::AiStateType::AiStateType_Dead;   break;
+            }
+
+            auto evOffset = field::CreateAiStateEvent(
+                fbb,
+                field::EntityType::EntityType_Monster,
+                monsterId,
+                fbState
+            );
+
+            auto envOffset = field::CreateEnvelope(
+                fbb,
+                field::Packet::Packet_AiStateEvent,
+                evOffset.Union()
+            );
+
+            fbb.Finish(envOffset);
+
+            sess->send_payload(
+                fbb.GetBufferPointer(),
+                static_cast<std::uint32_t>(fbb.GetSize())
+            );
+            });
     }
 
 
@@ -665,31 +673,34 @@ namespace core {
     }
 
 
-    // --------------------------------------------------------------------
-    // (옵션) 클라 절대좌표 Move를 필드워커로 보내는 헬퍼
-    //  - 서버 권한 이동으로 완전히 전환하면 안 써도 됨
-    // --------------------------------------------------------------------
     void send_move_to_fieldworker(std::uint64_t playerId, int fieldId, float x, float y)
     {
         flatbuffers::FlatBufferBuilder fbb;
 
         auto pos = field::CreateVec2(fbb, x, y);
 
-        // 플레이어가 보내는 Move이므로 entityType = Player, entityId = playerId
         auto cmd = field::CreateFieldCmd(
             fbb,
-            field::FieldCmdType::FieldCmdType_Move,      // type
-            field::EntityType::EntityType_Player,        // entityType
-            playerId,                                    // entityId
-            pos,                                         // pos
-            0,                                            // dir (절대 좌표 전송용이니 비워둠)
-            fbb.CreateString("")
+            field::FieldCmdType::FieldCmdType_Move,   // type
+            field::EntityType::EntityType_Player,     // entityType
+            playerId,                                 // entityId
+            pos,                                      // pos
+            0,                                        // dir (절대 좌표 전송이라 0)
+            fbb.CreateString("")                      // prefab (안씀)
         );
-        fbb.Finish(cmd);
+
+        // ★ FieldCmd를 Envelope로 포장
+        auto envOffset = field::CreateEnvelope(
+            fbb,
+            field::Packet::Packet_FieldCmd,           // union 타입
+            cmd.Union()
+        );
+
+        fbb.Finish(envOffset);
 
         NetMessage msg;
         msg.type = MessageType::Custom;
-        msg.session = nullptr;
+        msg.session = nullptr;                        // 내부용이니까 세션 없음
         msg.payload.assign(
             fbb.GetBufferPointer(),
             fbb.GetBufferPointer() + fbb.GetSize()
@@ -697,5 +708,6 @@ namespace core {
 
         SendToFieldWorker(fieldId, std::move(msg));
     }
+
 
 } // namespace core

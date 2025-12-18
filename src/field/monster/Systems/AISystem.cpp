@@ -10,6 +10,8 @@ namespace monster_ecs {
             auto& ai = ecs.aiComp.get(e);
             auto& tr = ecs.transform.get(e);
 
+            auto oldState = ai.state;
+
             if (st.hp <= 0) {
                 ai.state = CAI::State::Dead;
                 ai.targetId = 0;
@@ -61,6 +63,11 @@ namespace monster_ecs {
                 else {
                     ai.state = CAI::State::Chase;
                 }
+            }
+
+            if (ai.state != oldState) {
+                // 상태 바뀌었으면 FieldWorker 쪽 콜백 호출
+                env.broadcastAiState(e, ai.state);
             }
         }
     }
