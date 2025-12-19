@@ -3,7 +3,7 @@
 
 namespace monster_ecs {
 
-    void SpawnSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironmentApi& env)
+    void SpawnSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironment& env)
     {
         for (Entity e : ecs.monsters)
         {

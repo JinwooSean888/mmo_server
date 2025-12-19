@@ -5,7 +5,7 @@
 
 namespace monster_ecs {
 
-    void MovementSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironmentApi& env)
+    void MovementSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironment& env)
     {
         const float speed = 3.0f;
 

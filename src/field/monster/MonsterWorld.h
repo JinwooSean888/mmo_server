@@ -3,10 +3,11 @@
 #include "ComponentStorage.h"
 #include "Components.h"
 #include "core_types.h"
+#include "MonsterEnvironment.h"
 
 namespace monster_ecs {
 
-    struct MonsterEnvironmentApi;
+    class MonsterEnvironment;
     class SpawnSystem;
     class AISystem;
     class MovementSystem;
@@ -18,13 +19,11 @@ namespace monster_ecs {
     public:
         MonsterWorld();
 
-        Entity create_monster(INT64 databaseid,
-            float x, float y,
-            const std::string& prefab);
+        Entity create_monster(INT64 databaseid, float x, float y, const std::string& prefab, int monsterType);
 
         void kill_monster(Entity e);
-        void update(float dt, MonsterEnvironmentApi& env);
-        bool player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironmentApi& env);
+        void update(float dt, MonsterEnvironment& env);
+        bool player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironment& env);
 
         // ================= Components =================
         ComponentStorage<CTransform>  transform;

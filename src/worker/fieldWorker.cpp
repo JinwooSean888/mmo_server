@@ -9,7 +9,8 @@
 #include "game/PlayerManager.h"
 #include "proto/generated/field_generated.h" // FieldCmd, Vec2 등
 #include "proto/generated/game_generated.h" // FieldCmd, Vec2 등
-
+#include "field/monster/MonsterWorld.h"
+#include "field/monster/MonsterEnvironment.h"
 using net::SessionManager;
 
 namespace core {
@@ -33,20 +34,18 @@ namespace core {
     FieldWorker::FieldWorker(int fieldId)
         : Worker(make_field_worker_name(fieldId))
         , fieldId_(fieldId)
+        , monsterWorld_()                
+        , env_(monsterWorld_)
     {
         init_monster_env();
-        aoiSystem_ = std::make_shared<FieldAoiSystem>(
-            fieldId_,
-            15.0f,
-            2,
+
+        // 1) AOI 시스템 생성
+        aoiSystem_ = std::make_shared<FieldAoiSystem>(fieldId_,15.0f,2);
+
+        // 2) 콜백 등록
+        aoiSystem_->set_send_func(
             [this](std::uint64_t watcherId, const AoiEvent& ev)
             {
-                std::cout << "[AOI] watcher=" << watcherId
-                    << " subject=" << ev.subjectId
-                    << " type=" << (int)ev.type
-                    << " pos=" << ev.position.x << "," << ev.position.y
-                    << std::endl;
-
                 auto sess = SessionManager::instance().find_by_player_id(watcherId);
                 if (!sess)
                     return;
@@ -70,25 +69,26 @@ namespace core {
                 }
 
                 bool isMonster = is_monster_id(ev.subjectId);
-                field::EntityType et = field::EntityType::EntityType_Player;
-                if (isMonster) {
-                    et = field::EntityType::EntityType_Monster;
-                }
+                field::EntityType et = isMonster
+                    ? field::EntityType::EntityType_Monster
+                    : field::EntityType::EntityType_Player;
 
                 std::string prefabName = get_prefab_name(ev.subjectId, isMonster);
+                if (prefabName.empty())
+                    prefabName = "Default";
+
                 auto prefabStr = fbb.CreateString(prefabName);
 
                 auto cmd = field::CreateFieldCmd(
                     fbb,
-                    cmdType,                // type
-                    et,                     // entityType
-                    ev.subjectId,           // entityId
-                    pos,                    // pos
-                    0,                      // dir (안씀)
-                    prefabStr               // prefab
+                    cmdType,
+                    et,
+                    ev.subjectId,
+                    pos,
+                    0,
+                    prefabStr
                 );
 
-                // 여기부터 변경: Envelope로 감싸서 보냄
                 auto envOffset = field::CreateEnvelope(
                     fbb,
                     field::Packet::Packet_FieldCmd,
@@ -114,7 +114,12 @@ namespace core {
         if (fieldId == 1000) {
             SpawnMonstersEvenGrid(1000);
         }
+
+        // ★ 마지막에 AOI 활성화
+        aoiSystem_->set_initialized(true);
     }
+
+
 
 
     FieldWorker::~FieldWorker() = default;
@@ -128,7 +133,10 @@ namespace core {
             const uint8_t* buf = msg.payload.data();
 
             auto env = field::GetEnvelope(buf);
-            if (!env) return;
+            if (!env) {
+                std::cout << "Invalid field envelope";
+                return;
+            }
 
             if (env->pkt_type() != field::Packet::Packet_FieldCmd)
                 return;
@@ -194,7 +202,7 @@ namespace core {
 
         mv.moving = true;
         mv.dir = { dx, dy };
-        mv.speed = 10.0f; // 서버가 결정하는 속도
+        mv.speed = 4.5f; // 서버가 결정하는 속도
     }
 
 
@@ -573,45 +581,55 @@ namespace core {
     {
         monsterWorld_.update(step, env_);
     }
-    void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
-    {
-         if (fieldId != 1000) return;
+void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
+{
+    if (fieldId != 1000) return;
 
-        constexpr int   kSpawnCount = 300;
-        constexpr float kMinX = 0.f, kMaxX = 500.f;
-        constexpr float kMinY = 0.f, kMaxY = 500.f;
-    
-        // 100 -> 10 x 10
-        constexpr int cols = 10;
-        constexpr int rows = 10;
-    
-        const float cellW = (kMaxX - kMinX) / cols; // 50
-        const float cellH = (kMaxY - kMinY) / rows; // 50
-    
-        // 셀 중앙에 놓으면 가장 보기 좋고 충돌/겹침도 방지됨
-        for (int i = 0; i < kSpawnCount; ++i)
-        {
-            const int r = i / cols;
-            const int c = i % cols;
-    
-            float x = kMinX + (c + 0.5f) * cellW;
-            float y = kMinY + (r + 0.5f) * cellH;
-    
-            x = clampf(x, kMinX, kMaxX);
-            y = clampf(y, kMinY, kMaxY);
-    
-            const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
-            auto monsterId = MakeDatabaseID(1);
-    
-            monsterWorld_.create_monster(monsterId, x, y, tpl);
-            if (aoiSystem_) aoiSystem_->add_entity(monsterId, /*isPlayer=*/false, x, y);
-        }
+    constexpr int kSpawnCount = 300;
+    constexpr float kMinX = 0.f, kMaxX = 500.f;
+    constexpr float kMinY = 0.f, kMaxY = 500.f;
+
+    constexpr int cols = 10;
+    constexpr int rows = 10;
+
+    const float cellW = (kMaxX - kMinX) / cols;
+    const float cellH = (kMaxY - kMinY) / rows;
+
+    for (int i = 0; i < kSpawnCount; ++i)
+    {
+        const int r = i / cols;
+        const int c = i % cols;
+
+        float x = kMinX + (c + 0.5f) * cellW;
+        float y = kMinY + (r + 0.5f) * cellH;
+
+        x = clampf(x, kMinX, kMaxX);
+        y = clampf(y, kMinY, kMaxY);
+
+        // 프리팹
+        const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
+
+        // 몬스터 타입 계산 (0~8)
+        const int typeIndex = i % kMonsterTemplates.size();
+
+        int monsterType = 0;
+        if (typeIndex < 3)
+            monsterType = 1;     // Bow
+        else if (typeIndex < 6)
+            monsterType = 2;     // DoubleSword
+        else
+            monsterType = 3;     // MagicWand
+
+        uint64_t monsterId = MakeDatabaseID(1);
+
+        monsterWorld_.create_monster(monsterId, x, y, tpl, monsterType);
+
+        if (aoiSystem_)
+            aoiSystem_->add_entity(monsterId, false, x, y);
     }
+}
     void FieldWorker::broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState)
     {
-        // 이 몬스터를 보고 있는 플레이어들에게만 보내고 싶으면
-        // aoiSystem_->for_each_watcher(monsterId, [&](uint64_t watcherId) { ... });
-        // 이런 식으로 네가 만든 AOI 유틸에 맞춰서 돌리면 됨.
 
         aoiSystem_->for_each_watcher(monsterId, [&](uint64_t watcherId) {
             auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
@@ -664,7 +682,7 @@ namespace core {
         auto worker = core::FieldManager::instance().get_field(fieldId);
         if (!worker) {
             // 디버그용 로그 하나 넣어두면 좋음
-            // LOG_ERROR("SendToFieldWorker: field {} not found", fieldId);
+            
             return false;
         }
 

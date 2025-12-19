@@ -6,7 +6,7 @@ namespace monster_ecs {
 
     class SpawnSystem {
     public:
-        void update(float dt, class MonsterWorld& ecs, MonsterEnvironmentApi& env);
+        void update(float dt, class MonsterWorld& ecs, MonsterEnvironment& env);
     };
 
 } // namespace monster_ecs

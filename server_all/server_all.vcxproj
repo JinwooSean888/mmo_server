@@ -143,6 +143,7 @@
     <ClCompile Include="..\src\field\AoiWorld.cpp" />
     <ClCompile Include="..\src\field\FieldAoiSystem.cpp" />
     <ClCompile Include="..\src\field\FieldManager.cpp" />
+    <ClCompile Include="..\src\field\monster\MonsterEnvironment.cpp" />
     <ClCompile Include="..\src\field\monster\MonsterWorld.cpp" />
     <ClCompile Include="..\src\field\monster\Systems\AISystem.cpp" />
     <ClCompile Include="..\src\field\monster\Systems\CombatSystem.cpp" />

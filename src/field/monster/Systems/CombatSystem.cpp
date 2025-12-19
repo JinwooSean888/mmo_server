@@ -4,7 +4,7 @@
 
 namespace monster_ecs {
 
-    void CombatSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironmentApi& env)
+    void CombatSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironment& env)
     {
         for (Entity e : ecs.monsters) {
             auto& ai = ecs.aiComp.get(e);

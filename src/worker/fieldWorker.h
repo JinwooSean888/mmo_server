@@ -14,16 +14,14 @@ namespace core {
 
     static const std::vector<std::string> kMonsterTemplates = {    
     "BowAndArrow1",            
-    //"BowAndArrow2",
-    //"BowAndArrow3",
+    "BowAndArrow2",
+    "BowAndArrow3",
     //"DoubleSwords1",
     //"DoubleSwords2",
     //"DoubleSwords3",
     //"MagicWand1",
     //"MagicWand2",
     //"MagicWand3",
-    
-    //"NoWeaponTemplate_2"
     };
 
 
@@ -59,7 +57,7 @@ namespace core {
         int fieldId_{ 0 };    
         float worldTime_ = 0.0f;  // 필드 기준 누적 시간(초)
         monster_ecs::MonsterWorld monsterWorld_;
-        monster_ecs::MonsterEnvironmentApi env_;
+        monster_ecs::MonsterEnvironment env_;
         std::shared_ptr<FieldAoiSystem> aoiSystem_;
         // playerId -> Player
         std::unordered_map<std::uint64_t, Player::Ptr> players_;

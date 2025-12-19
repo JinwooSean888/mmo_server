@@ -43,6 +43,11 @@ namespace monster_ecs {
 
         float attackCooldown{ 1.0f };  // 공격 주기 1초
         float attackTimer{ 0.0f };  // 마지막 공격 시간
+        float  idlePatrolTimer{ 0.f };
+
+        float    moveDirX{ 0.f };
+        float    moveDirY{ 0.f };
+        float    moveSpeed{ 0.f };
     };
 
     struct CPrefabName {

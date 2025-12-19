@@ -14,20 +14,22 @@ namespace monster_ecs {
         moveSys_ = new MovementSystem();
         combatSys_ = new CombatSystem();
     }
-
-    Entity MonsterWorld::create_monster(INT64 databaseid,
-        float x, float y,
-        const std::string& prefab)
+    Entity MonsterWorld::create_monster(INT64 databaseid,float x, float y,const std::string& prefab,int monsterType)
     {
         Entity e = static_cast<Entity>(databaseid);
         monsters.push_back(e);
 
         transform.add(e, { x, y });
-        stats.add(e, {});                // 기본 스탯
-        monsterTag.add(e, {});           // 타입 필요하면 나중에 세팅
-        spawnInfo.add(e, { x, y });       // spawn 위치
-        aiComp.add(e, {});               // 기본 Idle
-        prefabNameComp.add(e, { prefab });// ?? 핵심: 프리팹 이름
+        stats.add(e, {});                      // 기본 스탯
+
+        // 여기서 타입 세팅
+        monster_ecs::CMonsterTag tag{};
+        tag.monsterType = monsterType;
+        monsterTag.add(e, tag);
+
+        spawnInfo.add(e, { x, y });            // spawn 위치
+        aiComp.add(e, {});                     // 기본 Idle
+        prefabNameComp.add(e, { prefab });     // 프리팹 이름
 
         return e;
     }
@@ -39,7 +41,7 @@ namespace monster_ecs {
         spawnInfo.get(e).deadTimer = 0.f;
     }
 
-    void MonsterWorld::update(float dt, MonsterEnvironmentApi& env)
+    void MonsterWorld::update(float dt, MonsterEnvironment& env)
     {
         if (spawnSys_)
             spawnSys_->update(dt, *this, env);
@@ -54,7 +56,7 @@ namespace monster_ecs {
             combatSys_->update(dt, *this, env);
     }
 
-    bool MonsterWorld::player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironmentApi& env)
+    bool MonsterWorld::player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironment& env)
     {
         for (auto e : monsters)
         {

@@ -39,8 +39,8 @@ ServerInitContext SetupGameAndFields(core::Dispatcher& disp)
 
   // 예: 1000 = 마을, 2000 = 사냥터1, 3000 = 던전 입구
     auto field1000 = fm.create_field(1000);
-    //auto field2000 = fm.create_field(2000);
-    //auto field3000 = fm.create_field(3000);
+    auto field2000 = fm.create_field(2000);
+    auto field3000 = fm.create_field(3000);
 
     if (!field1000) {
         std::cout << "[Fatal] FieldWorker(1000) 생성 실패\n";
@@ -48,8 +48,8 @@ ServerInitContext SetupGameAndFields(core::Dispatcher& disp)
 
   // 모니터링용 필드 워커 목록
     if (field1000) ctx.fieldWorkers.push_back(field1000.get());
-    //if (field2000) ctx.fieldWorkers.push_back(field2000.get());
-    //if (field3000) ctx.fieldWorkers.push_back(field3000.get());
+    if (field2000) ctx.fieldWorkers.push_back(field2000.get());
+    if (field3000) ctx.fieldWorkers.push_back(field3000.get());
 
   // 대표 필드 하나 (라우팅용, 나중에 player->field_id 로 교체 예정)
     ctx.mainField = field1000;
