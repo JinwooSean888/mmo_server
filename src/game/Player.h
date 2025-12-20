@@ -16,6 +16,7 @@ namespace core {
         float y{ 0.0f };
     };
 
+
     // 플레이어 이동 상태 (서버 권한 이동용)
     struct PlayerMoveState
     {
@@ -30,6 +31,8 @@ namespace core {
         int hp{ 100 };
         int maxHp{ 100 };        
     };
+
+
 
     class Player {
     public:
@@ -91,8 +94,7 @@ namespace core {
         {
             stat_.maxHp = maxHp;
             if (stat_.hp > stat_.maxHp) stat_.hp = stat_.maxHp;
-        }
-
+        }        
     private:
         uint64_t                      id_{ 0 };
         std::shared_ptr<net::Session> session_;

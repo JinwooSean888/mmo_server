@@ -1,5 +1,6 @@
 #pragma once
 #include "EntityTypes.h"
+#include "proto/generated/field_generated.h"
 
 namespace monster_ecs {
 
@@ -54,5 +55,26 @@ namespace monster_ecs {
         std::string name;
     };
 
+    enum class PlayerState {
+        Idle = 0,
+        Patrol,
+        Move,
+        Attack,
+        Return,
+        Dead,
+    };
+
+    static field::AiStateType to_fb_state(PlayerState s)
+    {
+        switch (s) {
+        case PlayerState::Idle:   return field::AiStateType::AiStateType_Idle;
+        case PlayerState::Patrol:   return field::AiStateType::AiStateType_Patrol;
+        case PlayerState::Move:   return field::AiStateType::AiStateType_Move;
+        case PlayerState::Attack: return field::AiStateType::AiStateType_Attack;
+        case PlayerState::Return: return field::AiStateType::AiStateType_Return;
+        case PlayerState::Dead:   return field::AiStateType::AiStateType_Dead;
+        }
+        return field::AiStateType::AiStateType_Idle;
+    }
 
 } // namespace monster_ecs

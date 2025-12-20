@@ -56,7 +56,7 @@ namespace monster_ecs {
             combatSys_->update(dt, *this, env);
     }
 
-    bool MonsterWorld::player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironment& env)
+    bool MonsterWorld::player_attack_monster(uint64_t pid, uint64_t mid, game::SkillType skillType, MonsterEnvironment& env)
     {
         for (auto e : monsters)
         {
@@ -64,7 +64,7 @@ namespace monster_ecs {
 
             auto& st = stats.get(e);
             st.hp -= 10;
-
+			
             if (st.hp <= 0)
             {
                 st.hp = 0;
@@ -72,12 +72,12 @@ namespace monster_ecs {
                 // 죽음 처리
                 kill_monster(e);
 
-                // ? 리스폰 대기 ON (SpawnSystem이 보려면 필요)
+                // 리스폰 대기 ON (SpawnSystem이 보려면 필요)
                 auto& sp = spawnInfo.get(e);
                 sp.pendingRespawn = true;
                 sp.respawnTimer = 0.0f;
 
-                // ? AOI에서 제거 (클라에 Leave 나가서 Destroy됨)
+                // AOI에서 제거 (클라에 Leave 나가서 Destroy됨)
                 if (env.removeFromAoi)
                     env.removeFromAoi(e);
 

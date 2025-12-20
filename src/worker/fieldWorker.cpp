@@ -34,13 +34,13 @@ namespace core {
     FieldWorker::FieldWorker(int fieldId)
         : Worker(make_field_worker_name(fieldId))
         , fieldId_(fieldId)
-        , monsterWorld_()                
+        , monsterWorld_()
         , env_(monsterWorld_)
     {
         init_monster_env();
 
         // 1) AOI 시스템 생성
-        aoiSystem_ = std::make_shared<FieldAoiSystem>(fieldId_,15.0f,2);
+        aoiSystem_ = std::make_shared<FieldAoiSystem>(fieldId_, 15.0f, 2);
 
         // 2) 콜백 등록
         aoiSystem_->set_send_func(
@@ -145,7 +145,7 @@ namespace core {
             if (!cmd) return;
 
             if (cmd->type() == field::FieldCmdType::FieldCmdType_Move)
-            {
+            {				
                 on_client_move_input(*cmd, msg.session);
             }
             // Enter/Leave 를 여기서도 쓰면 추가 분기
@@ -165,7 +165,6 @@ namespace core {
     {
         if (!session) return;
 
-        // 보안: 세션의 playerId 와 패킷의 playerId 가 같은지 확인
         if (session->player_id() != cmd.entityId())
             return;
 
@@ -176,7 +175,7 @@ namespace core {
         if (it == players_.end())
             return;
 
-        auto* dir = cmd.dir();   // 클라가 보낸 입력 방향 (dir 필드 추가했다고 가정)
+        auto* dir = cmd.dir();
         if (!dir)
             return;
 
@@ -186,24 +185,36 @@ namespace core {
 
         auto& mv = it->second->move_state();
 
-		// 무브 입력 시간 갱신
+        // 입력 시간은 항상 worldTime_ 기준
         mv.lastInputTime = worldTime_;
 
+        // 정지 입력인 경우: 바로 Idle 브로드캐스트
         if (len2 < 1e-4f) {
-            mv.moving = false;
-            mv.dir = { 0.f, 0.f };
-            mv.speed = 0.f;
+            if (mv.moving) {
+                mv.moving = false;
+                mv.dir = { 0.f, 0.f };
+                mv.speed = 0.f;
+
+                env_.broadcastPlayerState(cmd.entityId(), monster_ecs::PlayerState::Idle);
+            }
             return;
         }
 
+        // 방향 입력 있는 경우: 새로 움직이기 시작하는 순간에만 Move 브로드캐스트
         float invLen = 1.0f / std::sqrt(len2);
         dx *= invLen;
         dy *= invLen;
 
+        bool wasMoving = mv.moving;
         mv.moving = true;
         mv.dir = { dx, dy };
-        mv.speed = 4.5f; // 서버가 결정하는 속도
+        mv.speed = 4.5f;
+
+        if (!wasMoving) {
+            env_.broadcastPlayerState(cmd.entityId(), monster_ecs::PlayerState::Move);
+        }
     }
+
 
 
     // --------------------------------------------------------------------
@@ -244,13 +255,13 @@ namespace core {
         if (dt <= 0.0f) return;
 
         worldTime_ += dt;
-  /*      std::cout << "[FW] field=" << fieldId_
-            << " monsters=" << monsterWorld_.monsters.size()
-            << " world_ptr=" << (void*)&monsterWorld_
-            << "\n";*/
-        // ----------------------------
-        // 플레이어 고정 틱 (20Hz)
-        // ----------------------------
+        /*      std::cout << "[FW] field=" << fieldId_
+                  << " monsters=" << monsterWorld_.monsters.size()
+                  << " world_ptr=" << (void*)&monsterWorld_
+                  << "\n";*/
+                  // ----------------------------
+                  // 플레이어 고정 틱 (20Hz)
+                  // ----------------------------
         int playerLoops = 0;
         playerAcc_ += dt;
         while (playerAcc_ >= PlayerStep && playerLoops < 5)
@@ -284,8 +295,8 @@ namespace core {
         return true;
     }
 
-    void FieldWorker::send_combat_event(field::EntityType attackerType,uint64_t attackerId,field::EntityType targetType,uint64_t targetId,
-        int damage,int remainHp)
+    void FieldWorker::send_combat_event(field::EntityType attackerType, uint64_t attackerId, field::EntityType targetType, uint64_t targetId,
+        int damage, int remainHp)
     {
         auto sess = net::SessionManager::instance().find_by_player_id(targetId);
         if (!sess) return;
@@ -353,6 +364,7 @@ namespace core {
             return;
         }
 
+        auto skillType = skill->skill();
         uint64_t targetId = skill->targetId();
 
         std::cout << "[SKILL] Player " << pid
@@ -360,11 +372,13 @@ namespace core {
             << " skill=" << static_cast<int>(skill->skill())
             << std::endl;
 
+		env_.broadcastPlayerState(pid, monster_ecs::PlayerState::Attack);
         // ?? 모든 사망/리스폰/AOI 처리는 MonsterWorld 내부에서
-        bool dead = monsterWorld_.player_attack_monster(pid, targetId, env_);
+        bool dead = monsterWorld_.player_attack_monster(pid, targetId, skillType, env_);
 
         if (dead)
         {
+			env_.broadcastAiState(targetId, monster_ecs::CAI::State::Dead);
             std::cout << "[Monster] Dead id=" << targetId << std::endl;
         }
     }
@@ -374,9 +388,9 @@ namespace core {
         if (isMonster)
         {
 
-           if (monsterWorld_.prefabNameComp.has(id))
-                 return monsterWorld_.prefabNameComp.get(id).name;
-            
+            if (monsterWorld_.prefabNameComp.has(id))
+                return monsterWorld_.prefabNameComp.get(id).name;
+
             return "";  // 못 찾으면 빈 문자열
         }
 
@@ -389,7 +403,7 @@ namespace core {
     }
 
     // 맨 위 네임스페이스 core 안, FieldWorker 메서드들 근처에 추가
-    void FieldWorker::send_field_enter(std::uint64_t watcherId,std::uint64_t subjectId,bool isMonster,const Vec2& pos)
+    void FieldWorker::send_field_enter(std::uint64_t watcherId, std::uint64_t subjectId, bool isMonster, const Vec2& pos)
     {
         auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
         if (!sess) return;
@@ -543,6 +557,10 @@ namespace core {
         env_.broadcastAiState = [this](uint64_t monsterId, monster_ecs::CAI::State newState) {
             broadcast_monster_ai_state(monsterId, newState);
             };
+
+        env_.broadcastPlayerState = [this](uint64_t playerId, monster_ecs::PlayerState st) {
+            broadcast_player_ai_state(playerId, st);
+            };
     }
     void FieldWorker::tick_players(float step)
     {
@@ -555,6 +573,7 @@ namespace core {
                 mv.moving = false;
                 mv.dir = { 0.f, 0.f };
                 mv.speed = 0.f;
+                env_.broadcastPlayerState(pid, monster_ecs::PlayerState::Idle);
                 continue;
             }
 
@@ -581,76 +600,66 @@ namespace core {
     {
         monsterWorld_.update(step, env_);
     }
-void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
-{
-    if (fieldId != 1000) return;
-
-    constexpr int kSpawnCount = 300;
-    constexpr float kMinX = 0.f, kMaxX = 500.f;
-    constexpr float kMinY = 0.f, kMaxY = 500.f;
-
-    constexpr int cols = 10;
-    constexpr int rows = 10;
-
-    const float cellW = (kMaxX - kMinX) / cols;
-    const float cellH = (kMaxY - kMinY) / rows;
-
-    for (int i = 0; i < kSpawnCount; ++i)
+    void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
     {
-        const int r = i / cols;
-        const int c = i % cols;
+        if (fieldId != 1000) return;
 
-        float x = kMinX + (c + 0.5f) * cellW;
-        float y = kMinY + (r + 0.5f) * cellH;
+        constexpr int kSpawnCount = 300;
+        constexpr float kMinX = 0.f, kMaxX = 500.f;
+        constexpr float kMinY = 0.f, kMaxY = 500.f;
 
-        x = clampf(x, kMinX, kMaxX);
-        y = clampf(y, kMinY, kMaxY);
+        constexpr int cols = 10;
+        constexpr int rows = 10;
 
-        // 프리팹
-        const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
+        const float cellW = (kMaxX - kMinX) / cols;
+        const float cellH = (kMaxY - kMinY) / rows;
 
-        // 몬스터 타입 계산 (0~8)
-        const int typeIndex = i % kMonsterTemplates.size();
+        for (int i = 0; i < kSpawnCount; ++i)
+        {
+            const int r = i / cols;
+            const int c = i % cols;
 
-        int monsterType = 0;
-        if (typeIndex < 3)
-            monsterType = 1;     // Bow
-        else if (typeIndex < 6)
-            monsterType = 2;     // DoubleSword
-        else
-            monsterType = 3;     // MagicWand
+            float x = kMinX + (c + 0.5f) * cellW;
+            float y = kMinY + (r + 0.5f) * cellH;
 
-        uint64_t monsterId = MakeDatabaseID(1);
+            x = clampf(x, kMinX, kMaxX);
+            y = clampf(y, kMinY, kMaxY);
 
-        monsterWorld_.create_monster(monsterId, x, y, tpl, monsterType);
+            // 프리팹
+            const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
 
-        if (aoiSystem_)
-            aoiSystem_->add_entity(monsterId, false, x, y);
+            // 몬스터 타입 계산 (0~8)
+            const int typeIndex = i % kMonsterTemplates.size();
+
+            int monsterType = 0;
+            if (typeIndex < 3)
+                monsterType = 1;     // Bow
+            else if (typeIndex < 6)
+                monsterType = 2;     // DoubleSword
+            else
+                monsterType = 3;     // MagicWand
+
+            uint64_t monsterId = MakeDatabaseID(1);
+
+            monsterWorld_.create_monster(monsterId, x, y, tpl, monsterType);
+
+            if (aoiSystem_)
+                aoiSystem_->add_entity(monsterId, false, x, y);
+        }
     }
-}
-    void FieldWorker::broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState)
-    {
 
-        aoiSystem_->for_each_watcher(monsterId, [&](uint64_t watcherId) {
+    void FieldWorker::broadcast_ai_state(uint64_t entityId, field::EntityType et, field::AiStateType fbState)
+    {
+        aoiSystem_->for_each_watcher(entityId, [&](uint64_t watcherId) {
             auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
             if (!sess) return;
 
             flatbuffers::FlatBufferBuilder fbb;
 
-            field::AiStateType fbState = field::AiStateType::AiStateType_Idle;
-            switch (newState) {
-            case monster_ecs::CAI::State::Idle:   fbState = field::AiStateType::AiStateType_Idle;   break;
-            case monster_ecs::CAI::State::Patrol: fbState = field::AiStateType::AiStateType_Patrol; break;
-            case monster_ecs::CAI::State::Chase:  fbState = field::AiStateType::AiStateType_Chase;  break;
-            case monster_ecs::CAI::State::Attack: fbState = field::AiStateType::AiStateType_Attack; break;
-            case monster_ecs::CAI::State::Return: fbState = field::AiStateType::AiStateType_Return; break;
-            case monster_ecs::CAI::State::Dead:   fbState = field::AiStateType::AiStateType_Dead;   break;
-            }
-
             auto evOffset = field::CreateAiStateEvent(
                 fbb,
-                field::EntityType::EntityType_Monster,
-                monsterId,
+                et,
+                entityId,
                 fbState
             );
 
@@ -669,6 +678,27 @@ void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
             });
     }
 
+    void FieldWorker::broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState)
+    {
+
+        broadcast_ai_state(
+            monsterId,
+            field::EntityType::EntityType_Monster,
+            to_fb_state(newState)
+        );
+    }
+    void FieldWorker::broadcast_player_ai_state(uint64_t playerId, monster_ecs::PlayerState st)
+    {
+        std::cout << "[BCAST_PLAYER_STATE] pid=" << playerId
+            << " st=" << (int)st
+            << " fbState=" << (int)st << std::endl;
+
+        broadcast_ai_state(
+            playerId,
+            field::EntityType::EntityType_Player,
+            to_fb_state(st)
+        );
+    }
 
     // 어딘가에 있는 헬퍼들
 
@@ -682,7 +712,7 @@ void FieldWorker::SpawnMonstersEvenGrid(int fieldId)
         auto worker = core::FieldManager::instance().get_field(fieldId);
         if (!worker) {
             // 디버그용 로그 하나 넣어두면 좋음
-            
+
             return false;
         }
 

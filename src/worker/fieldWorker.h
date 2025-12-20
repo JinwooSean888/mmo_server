@@ -16,12 +16,12 @@ namespace core {
     "BowAndArrow1",            
     "BowAndArrow2",
     "BowAndArrow3",
-    //"DoubleSwords1",
-    //"DoubleSwords2",
-    //"DoubleSwords3",
-    //"MagicWand1",
-    //"MagicWand2",
-    //"MagicWand3",
+    "DoubleSwords1",
+    "DoubleSwords2",
+    "DoubleSwords3",
+    "MagicWand1",
+    "MagicWand2",
+    "MagicWand3",
     };
 
 
@@ -52,7 +52,10 @@ namespace core {
     private:
         bool is_walkable(const Vec2& from, const Vec2& to) const;
         void SpawnMonstersEvenGrid(int fieldId);
+
+        void broadcast_ai_state(uint64_t entityId, field::EntityType et, field::AiStateType fbState);
         void broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState);
+        void broadcast_player_ai_state(uint64_t playerId, monster_ecs::PlayerState st);
     private:
         int fieldId_{ 0 };    
         float worldTime_ = 0.0f;  // 필드 기준 누적 시간(초)

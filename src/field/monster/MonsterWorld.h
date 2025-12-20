@@ -4,6 +4,8 @@
 #include "Components.h"
 #include "core_types.h"
 #include "MonsterEnvironment.h"
+#include "proto/generated/field_generated.h" // FieldCmd, Vec2 등
+#include "proto/generated/game_generated.h" // FieldCmd, Vec2 등
 
 namespace monster_ecs {
 
@@ -15,6 +17,20 @@ namespace monster_ecs {
 
     using Entity = std::uint64_t;   // ?? databaseid를 그대로 Entity로 사용
 
+    static field::AiStateType to_fb_state(monster_ecs::CAI::State s)
+    {
+        switch (s) {
+        case monster_ecs::CAI::State::Idle:   return field::AiStateType::AiStateType_Idle;
+        case monster_ecs::CAI::State::Patrol: return field::AiStateType::AiStateType_Patrol;
+        case monster_ecs::CAI::State::Chase:  return field::AiStateType::AiStateType_Move;
+        case monster_ecs::CAI::State::Attack: return field::AiStateType::AiStateType_Attack;
+        case monster_ecs::CAI::State::Return: return field::AiStateType::AiStateType_Return;
+        case monster_ecs::CAI::State::Dead:   return field::AiStateType::AiStateType_Dead;
+        }
+        return field::AiStateType::AiStateType_Idle;
+    }
+
+
     class MonsterWorld {
     public:
         MonsterWorld();
@@ -23,7 +39,7 @@ namespace monster_ecs {
 
         void kill_monster(Entity e);
         void update(float dt, MonsterEnvironment& env);
-        bool player_attack_monster(uint64_t pid, uint64_t mid, MonsterEnvironment& env);
+        bool player_attack_monster(uint64_t pid, uint64_t targetid, game::SkillType skillType, MonsterEnvironment& env);
 
         // ================= Components =================
         ComponentStorage<CTransform>  transform;

@@ -4,9 +4,11 @@
 #include <random>
 
 #include "monster/Components.h"
+#include "proto/generated/field_generated.h"
 //#include "MonsterWorld.h"
 
 namespace monster_ecs {
+
 
     class MonsterWorld;
     class MonsterEnvironment {
@@ -17,6 +19,7 @@ namespace monster_ecs {
         std::function<void(std::uint64_t, std::uint64_t, int, int)> broadcastCombat;
         std::function<void(std::uint64_t, float, float)> moveInAoi;
         std::function<void(uint64_t, monster_ecs::CAI::State)>  broadcastAiState;
+        std::function<void(uint64_t, PlayerState st)>  broadcastPlayerState;
 
         std::function<void(uint64_t mid, float x, float y)> spawnInAoi;
         std::function<void(uint64_t mid)>                  removeFromAoi;

@@ -85,7 +85,7 @@ namespace monster_ecs {
                 if (ai.state != oldState) {
                     env.broadcastAiState(e, ai.state);
                 }
-                continue; // ★ 여기서 루프 끝내야 아래 근접/궁수 로직 안 탐
+                continue;
             }
 
 
@@ -114,8 +114,8 @@ namespace monster_ecs {
 
                 float attackRangeSq = attackRange * attackRange;
 
-                float fleeSpeed = 13.0f;  // ★ 도망 속도 (빠르게)
-                float chaseSpeed = 10.0f;  // ★ 쫓아가는 속도 (도망보다 느리게)
+                float fleeSpeed = 13.0f;  // 도망 속도 (빠르게)
+                float chaseSpeed = 10.0f;  // 쫓아가는 속도 (도망보다 느리게)
 
                 // ----- 너무 가까움: 도망 (Return) -----
                 if (distSq < desiredMinSq) {
