@@ -56,6 +56,10 @@ namespace core {
         void broadcast_ai_state(uint64_t entityId, field::EntityType et, field::AiStateType fbState);
         void broadcast_monster_ai_state(uint64_t monsterId, monster_ecs::CAI::State newState);
         void broadcast_player_ai_state(uint64_t playerId, monster_ecs::PlayerState st);
+
+        void broadcast_stat_event(uint64_t entityId, field::EntityType et, int hp, int maxHp, int sp, int maxSp);
+        void broadcast_monster_stat(uint64_t monsterId, int hp, int maxHp, int sp, int maxSp);
+        void broadcast_player_stat(uint64_t playerId, int hp, int maxHp, int sp, int maxSp);
     private:
         int fieldId_{ 0 };    
         float worldTime_ = 0.0f;  // 필드 기준 누적 시간(초)
@@ -71,7 +75,7 @@ namespace core {
         static constexpr float MonsterStep = 0.10f;  // 100ms
     private:        
         void send_combat_event(field::EntityType attackerType,uint64_t  attackerId, field::EntityType targetType, uint64_t targetId,int damage,int remainHp);
-        
+        void send_stat_event(std::uint64_t watcherId, std::uint64_t subjectId, bool isMonster, int hp, int maxHp, int sp, int maxSp);
         void monster_spawn_in_aoi(std::uint64_t monsterId, float x, float y);
         void monster_remove_from_aoi(std::uint64_t monsterId);
         void handle_skill(const NetMessage& msg);

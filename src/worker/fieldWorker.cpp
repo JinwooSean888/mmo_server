@@ -326,7 +326,40 @@ namespace core {
             static_cast<std::uint32_t>(fbb.GetSize())
         );
     }
+    void FieldWorker::send_stat_event(std::uint64_t watcherId, std::uint64_t subjectId, bool isMonster, int hp, int maxHp, int sp, int maxSp)
+    {
+        auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
+        if (!sess) return;
 
+        flatbuffers::FlatBufferBuilder fbb;
+
+        field::EntityType et = isMonster
+            ? field::EntityType::EntityType_Monster
+            : field::EntityType::EntityType_Player;
+
+        auto statOffset = field::CreateStatEvent(
+            fbb,
+            et,
+            subjectId,
+            hp,
+            maxHp,
+            sp,
+            maxSp
+        );
+
+        auto envOffset = field::CreateEnvelope(
+            fbb,
+            field::Packet::Packet_StatEvent,
+            statOffset.Union()
+        );
+
+        fbb.Finish(envOffset);
+
+        sess->send_payload(
+            fbb.GetBufferPointer(),
+            static_cast<std::uint32_t>(fbb.GetSize())
+        );
+    }   
 
     void FieldWorker::monster_spawn_in_aoi(std::uint64_t monsterId, float x, float y)
     {
@@ -561,6 +594,18 @@ namespace core {
         env_.broadcastPlayerState = [this](uint64_t playerId, monster_ecs::PlayerState st) {
             broadcast_player_ai_state(playerId, st);
             };
+
+        env_.broadcastMonsterStat =
+            [this](uint64_t monsterId, int hp, int maxHp, int sp, int maxSp)
+            {
+                broadcast_monster_stat(monsterId, hp, maxHp, sp, maxSp);
+            };
+        
+        env_.broadcastPlayerStat =
+            [this](uint64_t playerId, int hp, int maxHp, int sp, int maxSp)
+            {
+                broadcast_player_stat(playerId, hp, maxHp, sp, maxSp);
+            };
     }
     void FieldWorker::tick_players(float step)
     {
@@ -699,6 +744,57 @@ namespace core {
             to_fb_state(st)
         );
     }
+    void FieldWorker::broadcast_stat_event(uint64_t entityId, field::EntityType et, int hp, int maxHp, int sp, int maxSp)
+    {
+        aoiSystem_->for_each_watcher(entityId, [&](uint64_t watcherId)
+            {
+                auto sess = net::SessionManager::instance().find_by_player_id(watcherId);
+                if (!sess) return;
+
+                flatbuffers::FlatBufferBuilder fbb;
+
+                auto evOffset = field::CreateStatEvent(
+                    fbb,
+                    et,
+                    entityId,
+                    hp,
+                    maxHp,
+                    sp,
+                    maxSp
+                );
+
+                auto envOffset = field::CreateEnvelope(
+                    fbb,
+                    field::Packet::Packet_StatEvent,
+                    evOffset.Union()
+                );
+
+                fbb.Finish(envOffset);
+
+                sess->send_payload(
+                    fbb.GetBufferPointer(),
+                    static_cast<std::uint32_t>(fbb.GetSize())
+                );
+            });
+    }
+    void FieldWorker::broadcast_monster_stat(uint64_t monsterId,int hp, int maxHp,int sp, int maxSp)
+    {
+        broadcast_stat_event(
+            monsterId,
+            field::EntityType::EntityType_Monster,
+            hp, maxHp,
+            sp, maxSp
+        );
+    }
+    void FieldWorker::broadcast_player_stat(uint64_t playerId,int hp, int maxHp,int sp, int maxSp)
+    {
+        broadcast_stat_event(
+            playerId,
+            field::EntityType::EntityType_Player,
+            hp, maxHp,
+            sp, maxSp
+        );
+    }
 
     // 어딘가에 있는 헬퍼들
 
@@ -737,7 +833,7 @@ namespace core {
             fbb.CreateString("")                      // prefab (안씀)
         );
 
-        // ★ FieldCmd를 Envelope로 포장
+        // FieldCmd를 Envelope로 포장
         auto envOffset = field::CreateEnvelope(
             fbb,
             field::Packet::Packet_FieldCmd,           // union 타입
@@ -756,6 +852,7 @@ namespace core {
 
         SendToFieldWorker(fieldId, std::move(msg));
     }
+
 
 
 } // namespace core

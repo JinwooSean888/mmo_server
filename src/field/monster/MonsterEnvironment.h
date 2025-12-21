@@ -24,6 +24,10 @@ namespace monster_ecs {
         std::function<void(uint64_t mid, float x, float y)> spawnInAoi;
         std::function<void(uint64_t mid)>                  removeFromAoi;
 
+        std::function<void(uint64_t monsterId, int hp, int maxHp, int sp, int maxSp)> broadcastMonsterStat;
+        std::function<void(uint64_t playerId, int hp, int maxHp, int sp, int maxSp)> broadcastPlayerStat;
+
+
         MonsterEnvironment(MonsterWorld& world);
 
         void pick_random_walk_dir(float x, float y,
