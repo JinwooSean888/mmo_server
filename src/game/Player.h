@@ -28,8 +28,10 @@ namespace core {
 
     struct PlayerStat
     {
-        int hp{ 100 };
-        int maxHp{ 100 };        
+        int hp{ 500 };
+        int maxHp{ 500 };
+        int sp{ 100 };
+        int maxSp{ 100 };
     };
 
 
@@ -82,6 +84,8 @@ namespace core {
 
         int  hp() const { return stat_.hp; }
         int  max_hp() const { return stat_.maxHp; }
+        int  sp() const { return stat_.sp; }
+        int  max_sp() const { return stat_.maxSp; }
 
         void set_hp(int hp)
         {
@@ -94,7 +98,19 @@ namespace core {
         {
             stat_.maxHp = maxHp;
             if (stat_.hp > stat_.maxHp) stat_.hp = stat_.maxHp;
-        }        
+        }
+        void set_sp(int sp)
+        {
+            stat_.sp = sp;
+            if (stat_.sp > stat_.maxSp) stat_.sp = stat_.maxSp;
+            if (stat_.sp < 0)           stat_.sp = 0;
+        }
+
+        void set_max_sp(int maxSp)
+        {
+            stat_.maxSp = maxSp;
+            if (stat_.sp > stat_.maxSp) stat_.sp = stat_.maxSp;
+        }
     private:
         uint64_t                      id_{ 0 };
         std::shared_ptr<net::Session> session_;

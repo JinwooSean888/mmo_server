@@ -31,7 +31,8 @@ namespace monster_ecs {
 			
 
             // HP 깎는 건 env.broadcastCombat 안에서 처리
-            env.broadcastCombat(e, ai.targetId, damage, 0);
+			attack_player(e, ai.targetId, ecs, env);
+            
 
             // 쿨타임 리셋
             ai.attackTimer = 0.0f;
@@ -39,6 +40,32 @@ namespace monster_ecs {
             // 굳이 Chase로 돌리지 않고 Attack 유지해도 됨
             // 거리가 멀어지면 AISystem 쪽에서 Attack -> Chase 로 바꾸는 편이 깔끔
             // ai.state = CAI::State::Chase;
+        }
+    }
+
+    void CombatSystem::attack_player(uint64_t monsterId, uint64_t playerId, MonsterWorld& monsterWorld_, MonsterEnvironment& env_)
+    {
+        int hp = 0, maxHp = 0;
+        int sp = 0, maxSp = 0;
+
+        if (!env_.getPlayerStats(playerId, hp, maxHp, sp, maxSp))
+            return; // invalid
+
+        // === 데미지 계산 ===
+        auto& mon = monsterWorld_.stats.get(monsterId);
+        int dmg = mon.atk;
+
+        int newHp = std::max(0, hp - dmg);
+
+        env_.setPlayerStats(playerId, newHp, sp);
+
+        // === Packet broadcast ===
+        env_.broadcastCombat(monsterId, playerId, dmg, newHp);
+        env_.broadcastPlayerStat(playerId, newHp, maxHp, sp, maxSp);
+
+        if (newHp <= 0)
+        {
+            env_.broadcastPlayerState(playerId, monster_ecs::PlayerState::Dead);
         }
     }
 

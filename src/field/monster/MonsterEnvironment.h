@@ -14,6 +14,7 @@ namespace monster_ecs {
     class MonsterEnvironment {
 
     public:
+		//콜백 함수들
         std::function<std::uint64_t(float, float, float)> findClosestPlayer;
         std::function<bool(std::uint64_t, float&, float&)> getPlayerPosition;
         std::function<void(std::uint64_t, std::uint64_t, int, int)> broadcastCombat;
@@ -26,8 +27,13 @@ namespace monster_ecs {
 
         std::function<void(uint64_t monsterId, int hp, int maxHp, int sp, int maxSp)> broadcastMonsterStat;
         std::function<void(uint64_t playerId, int hp, int maxHp, int sp, int maxSp)> broadcastPlayerStat;
-
-
+        
+		//필드워커에게 플레이어 스탯을 얻어오는 콜백
+        std::function<bool(uint64_t playerId, int& hp, int& maxHp, int& sp, int& maxSp)> getPlayerStats;
+		//필드워커에게 플레이어 스탯을 설정하는 콜백
+        std::function<void(uint64_t playerId, int newHp, int newSp)> setPlayerStats;
+		//필드워커에게 플레이어 데미지를 입히는 콜백
+        std::function<void(uint64_t playerId, int dmg)> applyPlayerDamage;
         MonsterEnvironment(MonsterWorld& world);
 
         void pick_random_walk_dir(float x, float y,

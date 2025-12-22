@@ -559,18 +559,12 @@ namespace core {
                 if (it == players_.end() || !it->second) return;
 
                 auto& st = it->second->player_stat();
-                st.hp -= damage;
-                if (st.hp < 0) st.hp = 0;
 
                 send_combat_event(
                     field::EntityType::EntityType_Monster, monsterId,
                     field::EntityType::EntityType_Player, playerId,
-                    damage, st.hp
+                    0, st.hp
                 );
-
-                if (st.hp == 0) {
-                    // TODO: Á×À½ Ã³¸®
-                }
             };
 
         env_.moveInAoi = [this](uint64_t mid, float x, float y) {
@@ -605,6 +599,29 @@ namespace core {
             [this](uint64_t playerId, int hp, int maxHp, int sp, int maxSp)
             {
                 broadcast_player_stat(playerId, hp, maxHp, sp, maxSp);
+            };
+
+        env_.getPlayerStats = [this](uint64_t pid,
+            int& hp, int& maxHp,
+            int& sp, int& maxSp)
+            {
+                auto p = PlayerManager::instance().get_by_id(pid);
+                if (!p) return false;
+
+                hp = p->hp();
+                maxHp = p->max_hp();
+                sp = p->sp();
+                maxSp = p->max_sp();
+                return true;
+            };
+
+        env_.setPlayerStats = [this](uint64_t pid, int hp, int sp)
+            {
+                auto p = PlayerManager::instance().get_by_id(pid);
+                if (!p) return;
+
+                p->set_hp(hp);
+                p->set_sp(sp);
             };
     }
     void FieldWorker::tick_players(float step)
