@@ -12,6 +12,12 @@ namespace monster_ecs {
             auto& ty = ecs.monsterTag.get(e);
             auto oldState = ai.state;
 
+            if (st.dirty)
+			{// 스탯 변경 알림
+				env.broadcastMonsterStat(e, st.hp, st.maxHp, st.sp, st.maxSp);
+				st.dirty = false;
+            }
+
             if (st.hp <= 0) {
                 ai.state = CAI::State::Dead;
                 ai.targetId = 0;

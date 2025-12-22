@@ -28,6 +28,7 @@ namespace monster_ecs {
 
             auto& st = ecs.stats.get(e);
             int damage = st.atk;
+			
 
             // HP 깎는 건 env.broadcastCombat 안에서 처리
             env.broadcastCombat(e, ai.targetId, damage, 0);

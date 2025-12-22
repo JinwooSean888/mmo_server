@@ -14,13 +14,14 @@ namespace monster_ecs {
         moveSys_ = new MovementSystem();
         combatSys_ = new CombatSystem();
     }
-    Entity MonsterWorld::create_monster(INT64 databaseid,float x, float y,const std::string& prefab,int monsterType)
+    Entity MonsterWorld::create_monster(INT64 databaseid,float x, float y,const std::string& prefab,int monsterType
+    ,int maxHp, int hp ,int maxSp, int sp, int atk, int def)
     {
         Entity e = static_cast<Entity>(databaseid);
         monsters.push_back(e);
 
         transform.add(e, { x, y });
-        stats.add(e, {});                      // 기본 스탯
+        stats.add(e, {  maxHp,  hp , maxSp,  sp,  atk,  def });                      // 기본 스탯
 
         // 여기서 타입 세팅
         monster_ecs::CMonsterTag tag{};
@@ -64,6 +65,7 @@ namespace monster_ecs {
 
             auto& st = stats.get(e);
             st.hp -= 10;
+			st.dirty = true;
 			
             if (st.hp <= 0)
             {

@@ -12,8 +12,11 @@ namespace monster_ecs {
     struct CStats {
         int maxHp = 50;
         int hp = 50;
+        int maxSp = 50;
+        int sp = 50;        
         int atk = 7;
         int def = 0;
+		bool dirty = false;// 스탯 변경 알림 필요 여부
     };
 
     struct CMonsterTag {

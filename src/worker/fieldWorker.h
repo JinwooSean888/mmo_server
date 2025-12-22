@@ -12,16 +12,28 @@ namespace core {
 
     class FieldAoiSystem;
 
-    static const std::vector<std::string> kMonsterTemplates = {    
-    "BowAndArrow1",            
-    "BowAndArrow2",
-    "BowAndArrow3",
-    "DoubleSwords1",
-    "DoubleSwords2",
-    "DoubleSwords3",
-    "MagicWand1",
-    "MagicWand2",
-    "MagicWand3",
+    struct MonsterTemplate
+    {
+        std::string name;
+        int maxHp;
+        int hp;
+        int maxSp;
+        int sp;
+        int atk;
+        int def;
+    };
+
+    // 정적 템플릿 배열
+    static const std::vector<MonsterTemplate> kMonsterTemplates = {
+        {"BowAndArrow1",   200, 200, 100, 100, 7, 3},
+        {"BowAndArrow2",   200, 200, 100, 100, 7, 3},
+        {"BowAndArrow3",   200, 200, 100, 100, 7, 3},
+        {"DoubleSwords1",  200, 200, 100, 100, 7, 3},
+        {"DoubleSwords2",  200, 200, 100, 100, 7, 3},
+        {"DoubleSwords3",  200, 200, 100, 100, 7, 3},
+        {"MagicWand1",     200, 200, 100, 100, 7, 3},
+        {"MagicWand2",     200, 200, 100, 100, 7, 3},
+        {"MagicWand3",     200, 200, 100, 100, 7, 3},
     };
 
 

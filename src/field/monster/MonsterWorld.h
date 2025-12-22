@@ -35,7 +35,8 @@ namespace monster_ecs {
     public:
         MonsterWorld();
 
-        Entity create_monster(INT64 databaseid, float x, float y, const std::string& prefab, int monsterType);
+        Entity create_monster(INT64 databaseid, float x, float y, const std::string& prefab, int monsterType
+            , int maxHp, int hp, int maxSp, int sp, int atk, int def);
 
         void kill_monster(Entity e);
         void update(float dt, MonsterEnvironment& env);

@@ -115,7 +115,7 @@ namespace core {
             SpawnMonstersEvenGrid(1000);
         }
 
-        // ★ 마지막에 AOI 활성화
+        // 마지막에 AOI 활성화
         aoiSystem_->set_initialized(true);
     }
 
@@ -670,10 +670,8 @@ namespace core {
             x = clampf(x, kMinX, kMaxX);
             y = clampf(y, kMinY, kMaxY);
 
-            // 프리팹
-            const std::string& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
+            const MonsterTemplate& tpl = kMonsterTemplates[i % kMonsterTemplates.size()];
 
-            // 몬스터 타입 계산 (0~8)
             const int typeIndex = i % kMonsterTemplates.size();
 
             int monsterType = 0;
@@ -686,12 +684,24 @@ namespace core {
 
             uint64_t monsterId = MakeDatabaseID(1);
 
-            monsterWorld_.create_monster(monsterId, x, y, tpl, monsterType);
+            monsterWorld_.create_monster(
+                monsterId,
+                x, y,
+                tpl.name,
+                monsterType,
+                tpl.maxHp,
+                tpl.hp,
+                tpl.maxSp,
+                tpl.sp,
+                tpl.atk,
+                tpl.def
+            );
 
             if (aoiSystem_)
                 aoiSystem_->add_entity(monsterId, false, x, y);
         }
     }
+
 
     void FieldWorker::broadcast_ai_state(uint64_t entityId, field::EntityType et, field::AiStateType fbState)
     {
