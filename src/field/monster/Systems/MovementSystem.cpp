@@ -7,32 +7,78 @@ namespace monster_ecs {
 
     void MovementSystem::update(float dt, MonsterWorld& ecs, MonsterEnvironment& env)
     {
-        const float speed = 3.0f;
-
         for (Entity e : ecs.monsters) {
             auto& ai = ecs.aiComp.get(e);
-            if (ai.state != CAI::State::Chase) continue;
-
-            std::cout << "[Move] monsters=" << ecs.monsters.size() << "\n";
-            
-            std::cout << "[Move] state=" << (int)ai.state << " target=" << ai.targetId << "\n";
             auto& tr = ecs.transform.get(e);
 
-            float px, py;
-            if (!env.getPlayerPosition(ai.targetId, px, py)) continue;
+            // 정지 상태는 무조건 정지 (Idle에서도 좌표 변하는 문제 여기서 차단)
+            if (ai.state == CAI::State::Idle ||
+                ai.state == CAI::State::Attack ||
+                ai.state == CAI::State::Dead)
+            {
+                if (ai.moveSpeed != 0.f || ai.moveDirX != 0.f || ai.moveDirY != 0.f)
+                    stop_move(e, ai, env);
+                continue;
+            }
 
-            float dx = px - tr.x, dy = py - tr.y;
-            float len = std::sqrt(dx * dx + dy * dy);
-            if (len <= 0.001f) continue;
+            float dirX = 0.f, dirY = 0.f;
+            float speed = ai.moveSpeed;
 
-            dx /= len; dy /= len;
-            tr.x += dx * speed * dt;
-            tr.y += dy * speed * dt;
+            // Chase는 타겟을 향해 이동 (여기서만 좌표 적분!)
+            if (ai.state == CAI::State::Chase) {
+                float px, py;
+                if (!ai.targetId || !env.getPlayerPosition(ai.targetId, px, py)) {
+                    // 타겟 없으면 이동 중지
+                    stop_move(e, ai, env);
+                    continue;
+                }
 
-            if (env.moveInAoi)
-                env.moveInAoi(e, tr.x, tr.y);
+                float dx = px - tr.x;
+                float dy = py - tr.y;
+                float len2 = dx * dx + dy * dy;
+                if (len2 < 1e-6f) {
+                    stop_move(e, ai, env);
+                    continue;
+                }
+                float inv = 1.f / std::sqrt(len2);
+                dirX = dx * inv;
+                dirY = dy * inv;
 
+                // AI가 speed 세팅 안 했을 수도 있으니 기본값 보정
+                if (speed <= 0.f) speed = 6.0f;
+            }
+            // Patrol/Return은 AI가 만들어둔 방향으로 이동
+            else if (ai.state == CAI::State::Patrol || ai.state == CAI::State::Return) {
+                dirX = ai.moveDirX;
+                dirY = ai.moveDirY;
+
+                float len2 = dirX * dirX + dirY * dirY;
+                if (len2 < 1e-6f || speed <= 0.f) {
+                    // 방향/속도 없으면 멈춤
+                    stop_move(e, ai, env);
+                    continue;
+                }
+            }
+            else {
+                // 알 수 없는 상태면 안전하게 정지
+                stop_move(e, ai, env);
+                continue;
+            }
+
+            //이동 적용 (여기서만 tr 변경)
+            tr.x += dirX * speed * dt;
+            tr.y += dirY * speed * dt;
+
+            // AOI 갱신은 이동 시스템에서만
+            env.moveInAoi(e, tr.x, tr.y);
+
+            // 이동명령도 최신으로(클라가 이걸 쓰면 유용)
+            ai.moveDirX = dirX;
+            ai.moveDirY = dirY;
+            ai.moveSpeed = speed;
+            env.set_monster_move(e, dirX, dirY, speed);
         }
     }
+
 
 } // namespace monster_ecs

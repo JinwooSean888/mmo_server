@@ -211,7 +211,7 @@ namespace core {
         mv.speed = 4.5f;
 
         if (!wasMoving) {
-            env_.broadcastPlayerState(cmd.entityId(), monster_ecs::PlayerState::Move);
+            env_.broadcastPlayerState(cmd.entityId(), monster_ecs::PlayerState::Chase);
         }
     }
 

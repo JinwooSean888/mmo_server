@@ -47,5 +47,11 @@ namespace monster_ecs {
         MonsterWorld& world_;
         std::mt19937 rng_{ std::random_device{}() };
     };
-
+    static inline void stop_move(Entity e, auto& ai, MonsterEnvironment& env)
+    {
+        ai.moveDirX = 0.f;
+        ai.moveDirY = 0.f;
+        ai.moveSpeed = 0.f;
+        env.set_monster_move(e, 0.f, 0.f, 0.f);
+    }
 } // namespace monster_ecs

@@ -22,7 +22,7 @@ namespace core {
     {
         Vec2     dir{ 0.0f, 0.0f };  // 마지막 입력 방향(정규화)
         bool     moving{ false };    // 이동 중인지 여부
-        float    speed{ 5.0f };      // 유닛/초 (필요 시 변경)
+        float    speed{ PLAYER_SPEED };      // 유닛/초 (필요 시 변경)
         float    lastInputTime{ 0 }; // 서버 시각
     };
 

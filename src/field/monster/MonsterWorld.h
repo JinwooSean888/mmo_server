@@ -22,10 +22,10 @@ namespace monster_ecs {
         switch (s) {
         case monster_ecs::CAI::State::Idle:   return field::AiStateType::AiStateType_Idle;
         case monster_ecs::CAI::State::Patrol: return field::AiStateType::AiStateType_Patrol;
-        case monster_ecs::CAI::State::Chase:  return field::AiStateType::AiStateType_Move;
+        case monster_ecs::CAI::State::Chase:  return field::AiStateType::AiStateType_Chase;
         case monster_ecs::CAI::State::Attack: return field::AiStateType::AiStateType_Attack;
         case monster_ecs::CAI::State::Return: return field::AiStateType::AiStateType_Return;
-        case monster_ecs::CAI::State::Dead:   return field::AiStateType::AiStateType_Dead;
+        case monster_ecs::CAI::State::Dead:   return field::AiStateType::AiStateType_Dead;        
         }
         return field::AiStateType::AiStateType_Idle;
     }
