@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.props" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.props')" />
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -26,19 +19,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -57,12 +37,6 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -73,47 +47,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\ThirdParty\libuv-1.44.1\include;$(SolutionDir)Core\ThirdParty\flatbuffers\include;$(SolutionDir)src;$(SolutionDir)src\core\proto;$(SolutionDir)src\core;$(SolutionDir)Core\Base\Value;$(SolutionDir)Core\Base;$(SolutionDir)Core\Cross_IO;$(SolutionDir)src\field;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core;$(SolutionDir)Core\ThirdParty\libuv-1.44.1\include;$(SolutionDir)Core\ThirdParty\flatbuffers\include;$(SolutionDir)src;$(SolutionDir)src\core\proto;$(SolutionDir)src\core;$(SolutionDir)Core\Base\Value;$(SolutionDir)Core\Base;$(SolutionDir)Core\Cross_IO;$(SolutionDir)src\field;$(SolutionDir)packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\include;$(SolutionDir)Core\ThirdParty\hiredis;$(SolutionDir)Core\ThirdParty\mysql-connector-c-6.1.11-winx64\include;$(SolutionDir)Core\ThirdParty\jsoncpp_\include\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForcedIncludeFiles>GameServer.h</ForcedIncludeFiles>
+      <AdditionalOptions>/VERBOSE:LIB %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Build\x64\Debug\lib;$(SolutionDir)Build\x64\Debug;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kernel32.lib;libuv.lib;libflatbuffers.lib;Ws2_32.lib;Iphlpapi.lib;Psapi.lib;Userenv.lib;Advapi32.lib;Shell32.lib;Crypt32.lib;Ole32.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Build\x64\Debug\lib;$(SolutionDir)Build\x64\Debug;$(SolutionDir)packages\Microsoft.ML.OnnxRuntime.1.23.2\runtimes\win-x64\native;$(SolutionDir)Core\ThirdParty\hiredis\build\Debug;$(SolutionDir)Core\ThirdParty\mysql-connector-c-6.1.11-winx64\lib;$(SolutionDir)Core\ThirdParty\flatbuffers\include;$(SolutionDir)Core\ThirdParty\jsoncpp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Kernel32.lib;libuv.lib;Ws2_32.lib;Iphlpapi.lib;Psapi.lib;Userenv.lib;Advapi32.lib;Shell32.lib;Crypt32.lib;Ole32.lib;Shlwapi.lib;libflatbuffers.lib;libmysql.lib;hiredisd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/VERBOSE:LIB %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -124,7 +75,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\ThirdParty\libuv-1.44.1\include;$(SolutionDir)Core\ThirdParty\flatbuffers\include;$(SolutionDir)src;$(SolutionDir)src\core\proto;$(SolutionDir)src\core;$(SolutionDir)Core\Base\Value;$(SolutionDir)Core\Base;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core;$(SolutionDir)Core\ThirdParty\libuv-1.44.1\include;$(SolutionDir)Core\ThirdParty\flatbuffers\include;$(SolutionDir)src;$(SolutionDir)src\core\proto;$(SolutionDir)src\core;$(SolutionDir)Core\Base\Value;$(SolutionDir)Core\Base;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\config\server_config.cpp" />
     <ClCompile Include="..\src\core\dispatcher.cpp" />
     <ClCompile Include="..\src\core\handlers\game_auth_logic.cpp" />
     <ClCompile Include="..\src\core\handlers\game_field_logic.cpp" />
@@ -139,6 +91,7 @@
     <ClCompile Include="..\src\core\handlers\game_system_logic.cpp" />
     <ClCompile Include="..\src\core\ids.cpp" />
     <ClCompile Include="..\src\core\monitor\monitor.cpp" />
+    <ClCompile Include="..\src\core\path_utils.cpp" />
     <ClCompile Include="..\src\core\thread_pool.cpp" />
     <ClCompile Include="..\src\field\AoiWorld.cpp" />
     <ClCompile Include="..\src\field\FieldAoiSystem.cpp" />
@@ -155,12 +108,20 @@
     <ClCompile Include="..\src\net\session.cpp" />
     <ClCompile Include="..\src\net\tcp_server.cpp" />
     <ClCompile Include="..\src\net\uv_utils.cpp" />
+    <ClCompile Include="..\src\storage\DBWorker.cpp" />
+    <ClCompile Include="..\src\storage\DB\mysqlConn.cpp" />
+    <ClCompile Include="..\src\storage\DB\userUpsert.cpp" />
+    <ClCompile Include="..\src\storage\FlushWorkerUv.cpp" />
+    <ClCompile Include="..\src\storage\redis\redisConn.cpp" />
+    <ClCompile Include="..\src\storage\redis\redisUserCache.cpp" />
+    <ClCompile Include="..\src\storage\StorageSystem.cpp" />
     <ClCompile Include="..\src\worker\codec.cpp" />
     <ClCompile Include="..\src\worker\fieldWorker.cpp" />
     <ClCompile Include="..\src\worker\worker.cpp" />
     <ClCompile Include="..\src\worker\workerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\config\server_config.h" />
     <ClInclude Include="..\src\core\core_types.h" />
     <ClInclude Include="..\src\core\dispatcher.h" />
     <ClInclude Include="..\src\core\handlers\game_auth_logic.h" />
@@ -169,6 +130,7 @@
     <ClInclude Include="..\src\core\handlers\game_system_logic.h" />
     <ClInclude Include="..\src\core\ids.h" />
     <ClInclude Include="..\src\core\monitor\monitor.h" />
+    <ClInclude Include="..\src\core\path_utils.h" />
     <ClInclude Include="..\src\core\proto\Generated\field_generated.h" />
     <ClInclude Include="..\src\core\proto\Generated\game_generated.h" />
     <ClInclude Include="..\src\core\proto\protocol_verify.h" />
@@ -181,6 +143,8 @@
     <ClInclude Include="..\src\field\monster\EntityTypes.h" />
     <ClInclude Include="..\src\field\monster\MonsterEnvironment.h" />
     <ClInclude Include="..\src\field\monster\MonsterWorld.h" />
+    <ClInclude Include="..\src\field\monster\RL\OnnxPolicyBatch.h" />
+    <ClInclude Include="..\src\field\monster\RL\RlObs16.h" />
     <ClInclude Include="..\src\field\monster\Systems\AISystem.h" />
     <ClInclude Include="..\src\field\monster\Systems\CombatSystem.h" />
     <ClInclude Include="..\src\field\monster\Systems\MovementSystem.h" />
@@ -192,6 +156,15 @@
     <ClInclude Include="..\src\net\sessionManager.h" />
     <ClInclude Include="..\src\net\tcp_server.h" />
     <ClInclude Include="..\src\net\uv_utils.h" />
+    <ClInclude Include="..\src\storage\DBWorker.h" />
+    <ClInclude Include="..\src\storage\DBworker\DbJob.h" />
+    <ClInclude Include="..\src\storage\DB\mysqlConn.h" />
+    <ClInclude Include="..\src\storage\DB\userUpsert.h" />
+    <ClInclude Include="..\src\storage\DirtyHub.h" />
+    <ClInclude Include="..\src\storage\FlushWorkerUv.h" />
+    <ClInclude Include="..\src\storage\redis\redisConn.h" />
+    <ClInclude Include="..\src\storage\redis\redisUserCache.h" />
+    <ClInclude Include="..\src\storage\StorageSystem.h" />
     <ClInclude Include="..\src\worker\codec.h" />
     <ClInclude Include="..\src\worker\fieldWorker.h" />
     <ClInclude Include="..\src\worker\worker.h" />
@@ -201,8 +174,22 @@
     <ProjectReference Include="..\Core\Base\Base.vcxproj">
       <Project>{44ef9f91-6330-48cf-98fb-375640f6e84f}</Project>
     </ProjectReference>
+    <ProjectReference Include="H:\PJserver\server_all\Core\ThirdParty\jsoncpp\makefile\lib_json.vcxproj">
+      <Project>{1e6c2c1c-6453-4129-ae3f-0ee8e6599c89}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.targets" Condition="Exists('..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ML.OnnxRuntime.1.23.2\build\native\Microsoft.ML.OnnxRuntime.targets'))" />
+  </Target>
 </Project>

@@ -42,7 +42,3 @@ temp/
 # ----------------------------
 Thumbs.db
 .DS_Store
-
-# NuGet
-packages/
-*.nupkg

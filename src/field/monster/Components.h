@@ -58,6 +58,7 @@ namespace monster_ecs {
         bool netSynced = false; // 최초 동기화용
         // 몬스터별 RNG 시드 (유지)
         uint32_t rng = 0x12345678u;
+        float attackCd = 0.0f;
     };
 
     struct CPrefabName {

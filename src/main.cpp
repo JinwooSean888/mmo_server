@@ -18,7 +18,11 @@
 #include "core/monitor/monitor.h"
 #include "field/FieldManager.h"
 #include "core/handlers/game_handler_registry.h"   // ★ 전체 게임 핸들러 등록
+#include "config/server_config.h"
+#include "storage/StorageSystem.h"
+#include "core/path_utils.h"
 
+extern void test_redis_ping();
 uv_loop_t* loop = nullptr;
 struct ServerInitContext
 {
@@ -132,6 +136,19 @@ int main() {
     );
     server.start();
 
+	// ----- 스토리지 시스템 시작 -----
+	test_redis_ping(); // Redis 연결 테스트
+    config::ServerConfig cfg;
+    std::string err;
+
+    std::string cfgPath = GetExeDir() + "config.json";
+
+    if (!config::LoadServerConfig(cfgPath, cfg, &err)) {
+        std::cout << "[Config] load failed: " << err << "\n";
+        return 1;
+    }
+    auto storageSys = storage::StorageSystem::Create(loop, cfg);
+    storageSys.start();
     // ----- TickWorkers (게임 틱 워커) -----
     const int   tick_threads = 3;
     const int   tick_ms = 50;           // 20Hz
@@ -181,6 +198,9 @@ int main() {
 
     if (monitor_thread.joinable())
         monitor_thread.join();
+
+    // Flush stop -> DB stop
+     storageSys.stop();
 
     // ----- 종료 정리 -----
     core::FieldManager::instance().stop_all();

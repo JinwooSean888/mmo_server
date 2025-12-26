@@ -80,6 +80,33 @@
     <ClCompile Include="..\src\field\monster\MonsterEnvironment.cpp">
       <Filter>field\monster</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\storage\redis\redisConn.cpp">
+      <Filter>storage\redis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\DBWorker.cpp">
+      <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\FlushWorkerUv.cpp">
+      <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\StorageSystem.cpp">
+      <Filter>storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\redis\redisUserCache.cpp">
+      <Filter>storage\redis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\DB\mysqlConn.cpp">
+      <Filter>storage\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\storage\DB\userUpsert.cpp">
+      <Filter>storage\DB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\config\server_config.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\path_utils.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="worker">
@@ -114,6 +141,30 @@
     </Filter>
     <Filter Include="field\monster\systems">
       <UniqueIdentifier>{48d8dc35-2861-464b-82c7-07179e8fdd32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="field\monster\RL">
+      <UniqueIdentifier>{e92e8d5e-9e0e-4fee-a5f3-a4c1a63afae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{e7dd7eae-28f2-4ba3-8e43-fa11ce1f5a0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data\sql">
+      <UniqueIdentifier>{62649a49-81c3-4c5e-81c4-48f5f6cef74e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="storage">
+      <UniqueIdentifier>{adde45db-a574-48c9-b7a1-57c45479f142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="storage\redis">
+      <UniqueIdentifier>{58953aae-88f7-4fe8-8512-8858acfce4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="storage\DB">
+      <UniqueIdentifier>{a9ca82fc-f284-46b9-9e57-000a6de9c16e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{e0aba653-13a7-4780-a32a-d3d7feef606d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="storage\DBworker">
+      <UniqueIdentifier>{4c0285da-69d8-4fb0-851c-1f957418f23d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -220,5 +271,49 @@
       <Filter>field\monster\systems</Filter>
     </ClInclude>
     <ClInclude Include="..\src\GameServer.h" />
+    <ClInclude Include="..\src\field\monster\RL\OnnxPolicyBatch.h">
+      <Filter>field\monster\RL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\field\monster\RL\RlObs16.h">
+      <Filter>field\monster\RL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\redis\redisConn.h">
+      <Filter>storage\redis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\DirtyHub.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\DBWorker.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\FlushWorkerUv.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\StorageSystem.h">
+      <Filter>storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\redis\redisUserCache.h">
+      <Filter>storage\redis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\DB\mysqlConn.h">
+      <Filter>storage\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\DB\userUpsert.h">
+      <Filter>storage\DB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\config\server_config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\path_utils.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\storage\DBworker\DbJob.h">
+      <Filter>storage\DBworker</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-x64\native\onnxruntime_providers_shared.dll" />
   </ItemGroup>
 </Project>

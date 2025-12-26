@@ -8,7 +8,7 @@ namespace monster_ecs {
     {
         for (Entity e : ecs.monsters) {
             auto& ai = ecs.aiComp.get(e);
-
+            
             if (ai.state != CAI::State::Attack) {
                 // 공격 상태가 아니면 타이머 초기화
                 ai.attackTimer = 0.0f;
@@ -32,7 +32,7 @@ namespace monster_ecs {
 
             // HP 깎는 건 env.broadcastCombat 안에서 처리
 			attack_player(e, ai.targetId, ecs, env);
-            
+            ai.attackCd = 0.9f;
 
             // 쿨타임 리셋
             ai.attackTimer = 0.0f;

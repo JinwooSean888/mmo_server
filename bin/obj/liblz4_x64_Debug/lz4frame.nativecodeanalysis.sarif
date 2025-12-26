@@ -1,0 +1,67 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "MSVC Code Analysis",
+          "version": "14.44.35221.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///h:/pjserver/server_all/core/thirdparty/lz4-1.9.4/lib/lz4frame.c"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "80812286293760e032b254fb1c5bfd03ed099879dbecf1503286c0bb3c342574"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///h:/pjserver/server_all/core/thirdparty/lz4-1.9.4/lib/lz4frame.h"
+          },
+          "hashes": {
+            "sha-256": "47501e4925d60c0f87c7bfc68c8b9e0e4d942eea786e35d2c5bfbf5e9deab561"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///h:/pjserver/server_all/core/thirdparty/lz4-1.9.4/lib/lz4.h"
+          },
+          "hashes": {
+            "sha-256": "c1614ecf7ada7b0be1acb560d4239595f96fbb7aa6a79a7c40cb358753830be6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///h:/pjserver/server_all/core/thirdparty/lz4-1.9.4/lib/lz4hc.h"
+          },
+          "hashes": {
+            "sha-256": "6bc1efeb79571807da2ca084809de1760e0cd87064e40eccf9624d95088dce7d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///h:/pjserver/server_all/core/thirdparty/lz4-1.9.4/lib/xxhash.h"
+          },
+          "hashes": {
+            "sha-256": "aefdd236f35130495c18764cabed3f7b216906855fc5e6a9025cd2040bc84444"
+          }
+        }
+      ]
+    }
+  ]
+}

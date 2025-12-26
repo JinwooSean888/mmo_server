@@ -1,0 +1,2 @@
+G:\코드\PJserver\server_all\bin\x64_Debug\liblz4_static.lib.lastcodeanalysissucceeded
+G:\코드\PJserver\server_all\bin\obj\liblz4_x64_Debug\NativeCodeAnalysis.read.1.tlog
